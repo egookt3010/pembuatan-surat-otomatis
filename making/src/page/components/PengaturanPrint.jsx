@@ -1,7 +1,7 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState } from 'react';
 // redux
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 export default function PengaturanPrint(props) {
   const getRedux = useSelector((state) => state);
@@ -33,17 +33,18 @@ export default function PengaturanPrint(props) {
 
   useEffect(() => {
     if (
-      sessionStorage.getItem("PegaturanPrint") != undefined &&
-      sessionStorage.getItem("PegaturanPrint") != "[]"
+      sessionStorage.getItem('PegaturanPrint') != undefined &&
+      sessionStorage.getItem('PegaturanPrint') != '[]'
     ) {
-      const conf = JSON.parse(sessionStorage.getItem("PegaturanPrint")) ?? "[]";
+      const conf = JSON.parse(sessionStorage.getItem('PegaturanPrint')) ?? '[]';
       const margin = conf?.paperMargin ?? {};
-      const orientasi = conf?.paperOrientation ?? "";
-      const papperSize = conf?.paperSize ?? "";
-      $("[name='top']").val(margin?.top ?? "0cm");
-      $("[name='bottom']").val(margin?.bottom ?? "0cm");
-      $("[name='left']").val(margin?.left ?? "0cm");
-      $("[name='right']").val(margin?.right ?? "0cm");
+      console.log(margin);
+      const orientasi = conf?.paperOrientation ?? '';
+      const papperSize = conf?.paperSize ?? '';
+      $("[name='top']").val(margin?.top ?? '0cm');
+      $("[name='bottom']").val(margin?.bottom ?? '0cm');
+      $("[name='left']").val(margin?.left ?? '0cm');
+      $("[name='right']").val(margin?.right ?? '0cm');
       $("[name='orientation']").val(orientasi);
       $("[name='papper']").val(papperSize);
     }
@@ -60,7 +61,7 @@ export default function PengaturanPrint(props) {
       paperOrientation: $("[name='orientation']").val(),
       paperSize: $("[name='papper']").val(),
     };
-    sessionStorage.setItem("PegaturanPrint", JSON.stringify(ObjPrint) ?? "[]");
+    sessionStorage.setItem('PegaturanPrint', JSON.stringify(ObjPrint) ?? '[]');
     props.updateState();
   };
 
@@ -71,7 +72,7 @@ export default function PengaturanPrint(props) {
           <div
             className='form-group mb-1 pl-1 pr-1'
             style={{
-              width: "100%",
+              width: '100%',
             }}>
             <label htmlFor='' className='labels text-ubuntu-regular text-light'>
               Top
@@ -92,7 +93,7 @@ export default function PengaturanPrint(props) {
           <div
             className='form-group mb-1 pl-1 pr-1'
             style={{
-              width: "100%",
+              width: '100%',
             }}>
             <label htmlFor='' className='labels text-ubuntu-regular text-light'>
               Right
@@ -115,7 +116,7 @@ export default function PengaturanPrint(props) {
           <div
             className='form-group mb-1 pl-1 pr-1'
             style={{
-              width: "100%",
+              width: '100%',
             }}>
             <label htmlFor='' className='labels text-ubuntu-regular text-light'>
               Bottom
@@ -136,7 +137,7 @@ export default function PengaturanPrint(props) {
           <div
             className='form-group mb-1 pl-1 pr-1'
             style={{
-              width: "100%",
+              width: '100%',
             }}>
             <label htmlFor='' className='labels text-ubuntu-regular text-light'>
               Left
@@ -158,7 +159,7 @@ export default function PengaturanPrint(props) {
         <div
           className='form-group mb-1'
           style={{
-            width: "100%",
+            width: '100%',
           }}>
           <label htmlFor='' className='labels text-ubuntu-regular text-light'>
             Orientation
@@ -177,7 +178,7 @@ export default function PengaturanPrint(props) {
         <div
           className='form-group mb-1'
           style={{
-            width: "100%",
+            width: '100%',
           }}>
           <label htmlFor='' className='labels text-ubuntu-regular text-light'>
             Papper

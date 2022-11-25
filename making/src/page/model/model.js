@@ -42,8 +42,19 @@ const getDataPerangkat = async (response) => {
   }
 };
 
-const getKopSurat = (respose) => {
-  api_get(`${url_api_server}kop/getKopByAuth`, respose);
+const getKopSurat = async (response) => {
+  const _gets = await axios
+    .get(`${url_api_server}kop/getKopByAuth`, {
+      headers: {
+        Authorization: 'Bearer ' + sessionStorage.getItem('_token'),
+      },
+    })
+    .catch((err) => {
+      response(err.respose);
+    });
+  if (_gets) {
+    response(_gets?.data);
+  }
 };
 
 const postWizard = (data, respose) => {
