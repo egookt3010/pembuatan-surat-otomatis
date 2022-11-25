@@ -14,7 +14,7 @@ import {
   FaEdit,
 } from 'react-icons/fa';
 
-import GenContent from './Build';
+import { Build } from './Build';
 import Modal from 'react-responsive-modal';
 import axios from 'axios';
 import { postWizard } from './model/model';
@@ -271,7 +271,6 @@ export default function Surat(props) {
                 label: _.judul_kop,
               });
             });
-
             setOptKopSurat(opt);
           }
         });
@@ -306,7 +305,6 @@ export default function Surat(props) {
   };
   const getDesa = () => {
     getDataDesa((result) => {
-      console.log('3', result);
       setData_desa(result ?? {});
     });
   };
@@ -355,12 +353,26 @@ export default function Surat(props) {
                 </div>
               </div>
             </div>
-            <div
+            <Build
+              layout={configPrint}
+              padding={setterpadding}
+              ref={componentRef}
+              code={data ?? null}
+              penduduk={penduduk}
+              perangkat={dataPerangkat}
+              kop={kopSelected ?? ''}
+              nosurat={noSurat ?? ''}
+              dataDesa={data_desa ?? {}}
+            />
+            {/* <div
               className='page'
               style={setterpadding}
               data-size={configPrint != null && configPrint.paperSize}
               data-layout={configPrint != null && configPrint.paperOrientation}>
-              <GenContent
+              <Build
+                layout={configPrint}
+                padding={setterpadding}
+                ref={componentRef}
                 code={data ?? null}
                 penduduk={penduduk}
                 perangkat={dataPerangkat}
@@ -368,7 +380,7 @@ export default function Surat(props) {
                 nosurat={noSurat ?? ''}
                 dataDesa={data_desa ?? {}}
               />
-            </div>
+            </div> */}
           </div>
           <div id='aside'>
             <div className='header-logo'>
@@ -474,7 +486,7 @@ export default function Surat(props) {
           </div>
         </>
       )}
-      <div style={{ display: 'none' }}>
+      {/* <div style={{ display: 'none' }}>
         <ComponentToPrint
           ref={componentRef}
           content={content}
@@ -487,7 +499,7 @@ export default function Surat(props) {
             right: configPrint?.paperMargin?.right ?? 0,
           }}
         />
-      </div>
+      </div> */}
     </div>
   );
 }

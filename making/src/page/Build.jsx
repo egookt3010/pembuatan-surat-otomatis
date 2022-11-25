@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 import $ from 'jquery';
 import moment from 'moment';
 // import "moment/dist/locale/id";
@@ -16,11 +16,12 @@ import {
   buildNoSurat,
   buildAutoDataDesa,
 } from './function/main__func';
+import './style/stylePrint.scss';
 // redux
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 
-export default function Build(props) {
+export const Build = forwardRef((props, ref) => {
   moment.locale('id');
   const [data, setData] = useState(null);
   const [penduduk, setpenduduk] = useState(null);
@@ -156,17 +157,46 @@ export default function Build(props) {
     });
   }, [inputName]);
   // --------------------------------------------------
+  const styles = () => {
+    return `
+    @media print {
+      body {
+          margin: 0 !important;
+          padding: 0 !important;
+      }
+  
+      @page {
+          margin: 0 !important;
+          padding: 0 !important;
+      }
+  
+      .page {
+          overflow-wrap: break-word !important;          
+      }
+  }
+  `;
+  };
 
   return (
-    <div id='frame-letter'>
-      {Codes != null && (
-        <>
-          <div
-            id='content'
-            dangerouslySetInnerHTML={{ __html: `${Codes}` }}></div>
-        </>
-      )}
-    </div>
+    <>
+      <div
+        ref={ref}
+        className='page'
+        style={props?.padding}
+        data-size={props?.configPrint?.paperSize ?? 'A4'}
+        data-layout={props?.configPrint?.paperOrientation ?? 'potrain'}>
+        <style>{styles()}</style>
+        <div id='frame-letter' style={{ overflow: 'hidden' }}>
+          {Codes != null && (
+            <>
+              <div
+                id='content'
+                dangerouslySetInnerHTML={{ __html: `${Codes}` }}></div>
+            </>
+          )}
+        </div>
+      </div>
+    </>
   );
-}
+});
 // 1409055210780002
