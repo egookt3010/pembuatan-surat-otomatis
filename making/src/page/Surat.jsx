@@ -260,18 +260,20 @@ export default function Surat(props) {
       setStatusKop(res);
       if (res) {
         getKopSurat((result) => {
-          setKopSurat(result.data);
+          if (result.length > 0) {
+            setKopSurat(result);
 
-          const opt = [];
-          result.data.map((_, i) => {
-            opt.push({
-              data: _?.code ?? '',
-              value: _.id_kop_surat,
-              label: _.judul_kop,
+            const opt = [];
+            result.data.map((_, i) => {
+              opt.push({
+                data: _?.code ?? '',
+                value: _.id_kop_surat,
+                label: _.judul_kop,
+              });
             });
-          });
 
-          setOptKopSurat(opt);
+            setOptKopSurat(opt);
+          }
         });
       }
     });
