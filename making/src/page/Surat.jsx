@@ -264,7 +264,7 @@ export default function Surat(props) {
             setKopSurat(result);
 
             const opt = [];
-            result.data.map((_, i) => {
+            result?.map((_, i) => {
               opt.push({
                 data: _?.code ?? '',
                 value: _.id_kop_surat,
