@@ -39,17 +39,18 @@ export const Build = forwardRef((props, ref) => {
   //   effect to get data
   useEffect(() => {
     if (props.code != undefined && props.code != null && props.code != '') {
+      console.log(props?.nosurat);
       var codeBuilding = buildAutoDataPenduduk(
         `<div>${props?.code ?? '<></>'}</div>`,
         props.penduduk
       );
-      console.log('perangkat', props.perangkat);
+      // console.log('perangkat', props.perangkat);
       codeBuilding = buildAutoDataOrangtua(
         codeBuilding,
         props.penduduk.orangtua
       );
       codeBuilding = buildAutoDataDesa(codeBuilding, props.dataDesa);
-      console.log(props.dataDesa);
+      // console.log(props.dataDesa);
       codeBuilding = buildAutoDataPerangkat(codeBuilding, props.perangkat);
 
       codeBuilding = buildInput(codeBuilding, (resuts) => {

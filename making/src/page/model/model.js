@@ -85,10 +85,38 @@ const getDataDesa = async (response) => {
     .catch((err) => {
       response(err.respose);
     });
-  console.log('1', __gets);
   if (__gets) {
-    console.log('2', __gets);
     response(__gets?.data);
+  }
+};
+
+const getNoSurat = async (response) => {
+  const __gets = await axios
+    .get(`${url_api_server}format-no-surat`, {
+      headers: {
+        Authorization: 'Bearer ' + sessionStorage.getItem('_token'),
+      },
+    })
+    .catch((err) => {
+      response(err.respose);
+    });
+  if (__gets) {
+    response(__gets?.data);
+  }
+};
+
+const RequestNoSurat = async (req, res) => {
+  const __gets = await axios
+    .post(`${url_api_server}format-no-surat/created-no-surat`, req, {
+      headers: {
+        Authorization: 'Bearer ' + sessionStorage.getItem('_token'),
+      },
+    })
+    .catch((err) => {
+      res(err.respose);
+    });
+  if (__gets) {
+    res(__gets?.data);
   }
 };
 
@@ -116,4 +144,6 @@ export {
   getKopSurat,
   postWizard,
   getDataDesa,
+  getNoSurat,
+  RequestNoSurat,
 };

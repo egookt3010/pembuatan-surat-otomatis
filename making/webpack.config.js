@@ -5,6 +5,7 @@ const path = require('path');
 module.exports = {
   entry: {
     content: './src/app.js',
+    update: './src/appUpdate.js',
   },
   output: {
     filename: '[name].bundle.js',

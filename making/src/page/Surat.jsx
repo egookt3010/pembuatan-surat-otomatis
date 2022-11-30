@@ -41,7 +41,10 @@ import {
   getKopSurat,
   getPenduduk,
   getDataDesa,
+  getNoSurat,
+  RequestNoSurat,
 } from './model/model';
+import { url_printing } from './config/config';
 import { CheckKopSurat, CheckNoSurat } from './function/main__func';
 import Editor from './components/CkEditor';
 import PengaturanPrint from './components/PengaturanPrint';
@@ -76,6 +79,8 @@ export default function Surat(props) {
 
   const [dataLampiran, setDataLampiran] = useState([]);
   const [fileLampiran, setFileLampiran] = useState([]);
+  const [listNoSurat, setListNoSurat] = useState([]);
+  const [noSuratSelect, setNoSuratSelect] = useState([]);
   // ////////////////////////////////////////////////////////////
   // useEffect(() => {
   //   if (props.open) {
@@ -124,6 +129,7 @@ export default function Surat(props) {
       hndelGetPenduduk();
       getDataPerangkatDesa();
       getDesa();
+      getNomorSurat();
       sessionStorage.setItem('PegaturanPrint', surat?.config_print ?? '[]');
       setSetterpadding({
         paddingTop:
@@ -137,6 +143,16 @@ export default function Surat(props) {
       });
     }
   }, []);
+  const getNomorSurat = () => {
+    getNoSurat((result) => {
+      console.log(result?.response);
+      const dd = [];
+      result?.response?.map((x, i) => {
+        dd.push({ value: x?.id, label: x?.title });
+      });
+      setListNoSurat(dd);
+    });
+  };
 
   const hndelChangeState = () => {
     if (sessionStorage.getItem('PegaturanPrint') != undefined) {
@@ -224,14 +240,15 @@ export default function Surat(props) {
             }
             postWizard(form_data, (res) => {
               // console.log(res);
+              const TimePrint = setInterval(() => {
+                $('.containerLoadingFull')
+                  .addClass('hide-load')
+                  .removeClass('show-load');
+                // handlePrint();
+                window.open(url_printing + res?.data?.id_surat);
+                clearInterval(TimePrint);
+              }, 1000);
             });
-            const TimePrint = setInterval(() => {
-              $('.containerLoadingFull')
-                .addClass('hide-load')
-                .removeClass('show-load');
-              handlePrint();
-              clearInterval(TimePrint);
-            }, 1000);
           }
         } else {
           $('.containerLoadingFull')
@@ -309,6 +326,15 @@ export default function Surat(props) {
     });
   };
 
+  const funcSelectedNoSurat = (e) => {
+    const form_data = new FormData();
+    form_data.append('idNoSurat', e.value);
+    form_data.append('id_wizard_template', dataSurat?.id_wizard_template);
+    RequestNoSurat(form_data, (result) => {
+      setNoSuratSelect(result);
+    });
+  };
+
   return (
     <div id='printing-root'>
       {statusEdit ? (
@@ -361,7 +387,7 @@ export default function Surat(props) {
               penduduk={penduduk}
               perangkat={dataPerangkat}
               kop={kopSelected ?? ''}
-              nosurat={noSurat ?? ''}
+              nosurat={noSuratSelect ?? ''}
               dataDesa={data_desa ?? {}}
             />
             {/* <div
@@ -417,17 +443,18 @@ export default function Surat(props) {
                         <div className='form-group'>
                           <label htmlFor=''>Format No Surat</label>
                           <Select
-                            options={[{ value: '1', label: 'format-1' }]}
+                            options={listNoSurat}
+                            onChange={funcSelectedNoSurat}
                           />
                         </div>
-                        <div className='form-group'>
+                        {/* <div className='form-group'>
                           <label htmlFor=''>Nomor Surat</label>
                           <input
                             type='text'
                             className='input-text'
                             onKeyUp={hndelNoSurat}
                           />
-                        </div>
+                        </div> */}
                       </>
                     )}
                   </div>

@@ -50,6 +50,7 @@
                 if (getter.status == 200) {
                     const data = getter.data;
 
+
                     sessionStorage.setItem("main-data", JSON.stringify(data));
 
                     var html = ``;
