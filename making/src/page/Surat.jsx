@@ -80,7 +80,6 @@ export default function Surat(props) {
   const [dataLampiran, setDataLampiran] = useState([]);
   const [fileLampiran, setFileLampiran] = useState([]);
   const [listNoSurat, setListNoSurat] = useState([]);
-  const [noSuratSelect, setNoSuratSelect] = useState([]);
   // ////////////////////////////////////////////////////////////
   // useEffect(() => {
   //   if (props.open) {
@@ -317,9 +316,9 @@ export default function Surat(props) {
       setCheckStatusNoSurat(res);
     });
   };
-  const hndelNoSurat = (thisNo) => {
-    setNosurat(thisNo.target.value);
-  };
+  // const hndelNoSurat = (thisNo) => {
+  //   setNosurat(thisNo.target.value);
+  // };
   const getDesa = () => {
     getDataDesa((result) => {
       setData_desa(result ?? {});
@@ -331,7 +330,7 @@ export default function Surat(props) {
     form_data.append('idNoSurat', e.value);
     form_data.append('id_wizard_template', dataSurat?.id_wizard_template);
     RequestNoSurat(form_data, (result) => {
-      setNoSuratSelect(result);
+      setNosurat(result);
     });
   };
 
@@ -387,7 +386,7 @@ export default function Surat(props) {
               penduduk={penduduk}
               perangkat={dataPerangkat}
               kop={kopSelected ?? ''}
-              nosurat={noSuratSelect ?? ''}
+              nosurat={setNosurat ?? ''}
               dataDesa={data_desa ?? {}}
             />
             {/* <div
