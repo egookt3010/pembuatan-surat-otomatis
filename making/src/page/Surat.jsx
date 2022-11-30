@@ -386,7 +386,7 @@ export default function Surat(props) {
               penduduk={penduduk}
               perangkat={dataPerangkat}
               kop={kopSelected ?? ''}
-              nosurat={setNosurat ?? ''}
+              nosurat={noSurat ?? ''}
               dataDesa={data_desa ?? {}}
             />
             {/* <div
