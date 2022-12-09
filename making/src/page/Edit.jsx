@@ -41,7 +41,10 @@ import {
   getKopSurat,
   getPenduduk,
   getDataDesa,
+  getNoSurat,
+  RequestNoSurat,
 } from './model/model';
+import { url_printing } from './config/config';
 import { CheckKopSurat, CheckNoSurat } from './function/main__func';
 import Editor from './components/CkEditor';
 import PengaturanPrint from './components/PengaturanPrint';
@@ -76,6 +79,7 @@ export default function UpdateSurat(props) {
 
   const [dataLampiran, setDataLampiran] = useState([]);
   const [fileLampiran, setFileLampiran] = useState([]);
+  const [listNoSurat, setListNoSurat] = useState([]);
   // ////////////////////////////////////////////////////////////
   // useEffect(() => {
   //   if (props.open) {
@@ -90,9 +94,6 @@ export default function UpdateSurat(props) {
   const onOpenModal = () => setOpen(true);
   const onCloseModal = () => setOpen(false);
 
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-  });
   // useEffect(() => {
   //   if (
   //     props.globalData != undefined &&
@@ -108,6 +109,16 @@ export default function UpdateSurat(props) {
   const hndelReplacePenduduk = (penduduk) => {
     setpenduduk(penduduk ?? {});
   };
+  const getNomorSurat = () => {
+    getNoSurat((result) => {
+      console.log(result?.response);
+      const dd = [];
+      result?.response?.map((x, i) => {
+        dd.push({ value: x?.id, label: x?.title });
+      });
+      setListNoSurat(dd);
+    });
+  };
 
   useEffect(() => {
     if (sessionStorage.getItem('dataUpdate') != undefined) {
@@ -118,25 +129,36 @@ export default function UpdateSurat(props) {
       setDataSurat(surat?.wizard);
       setData(surat?.wizard?.code ?? '');
       setConfigPrint(JSON.parse(surat?.config ?? '{}'));
-      console.log(JSON.parse(surat?.config ?? '{}'));
-      // func__statusKop(surat?.code ?? '');
-      // func__checkStatusNoSurat(surat?.code ?? '');
+      console.log('<>', {
+        paddingTop: JSON.parse(surat?.config ?? '{}')?.paperMargin?.top ?? 0,
+        paddingBottom:
+          JSON.parse(surat?.config ?? '{}')?.paperMargin?.bottom ?? 0,
+        paddingLeft: JSON.parse(surat?.config ?? '{}')?.paperMargin?.left ?? 0,
+        paddingRight:
+          JSON.parse(surat?.config ?? '{}')?.paperMargin?.right ?? 0,
+      });
+
+      func__statusKop(surat?.wizard?.code ?? '');
+      func__checkStatusNoSurat(surat?.wizard?.code ?? '');
+      hndelGetPenduduk();
+      getDataPerangkatDesa();
+      getDesa();
+      getNomorSurat();
       // setLampiran(JSON.parse(surat?.attachment ?? '[]'));
       // setConfigure(JSON.parse(surat?.config_print ?? '[]'));
       //   hndelGetPenduduk();
       //   getDataPerangkatDesa();
       //   getDesa();
       //   sessionStorage.setItem('PegaturanPrint', surat?.config_print ?? '[]');
-      //   setSetterpadding({
-      //     paddingTop:
-      //       JSON.parse(surat?.config_print ?? '[]')?.paperMargin?.top ?? 0,
-      //     paddingBottom:
-      //       JSON.parse(surat?.config_print ?? '[]')?.paperMargin?.bottom ?? 0,
-      //     paddingLeft:
-      //       JSON.parse(surat?.config_print ?? '[]')?.paperMargin?.left ?? 0,
-      //     paddingRight:
-      //       JSON.parse(surat?.config_print ?? '[]')?.paperMargin?.right ?? 0,
-      //   });
+
+      setSetterpadding({
+        paddingTop: JSON.parse(surat?.config ?? '{}')?.paperMargin?.top ?? 0,
+        paddingBottom:
+          JSON.parse(surat?.config ?? '{}')?.paperMargin?.bottom ?? 0,
+        paddingLeft: JSON.parse(surat?.config ?? '{}')?.paperMargin?.left ?? 0,
+        paddingRight:
+          JSON.parse(surat?.config ?? '{}')?.paperMargin?.right ?? 0,
+      });
     }
   }, []);
 
@@ -226,15 +248,15 @@ export default function UpdateSurat(props) {
             }
             postWizard(form_data, (res) => {
               // console.log(res);
+              const TimePrint = setInterval(() => {
+                $('.containerLoadingFull')
+                  .addClass('hide-load')
+                  .removeClass('show-load');
+                // handlePrint();
+                window.open(url_printing + res?.data?.id_surat);
+                clearInterval(TimePrint);
+              }, 1000);
             });
-            const TimePrint = setInterval(() => {
-              $('.containerLoadingFull')
-                .addClass('hide-load')
-                .removeClass('show-load');
-              // handlePrint();
-              console.log();
-              clearInterval(TimePrint);
-            }, 1000);
           }
         } else {
           $('.containerLoadingFull')
@@ -303,15 +325,23 @@ export default function UpdateSurat(props) {
       setCheckStatusNoSurat(res);
     });
   };
-  const hndelNoSurat = (thisNo) => {
-    setNosurat(thisNo.target.value);
-  };
+  // const hndelNoSurat = (thisNo) => {
+  //   setNosurat(thisNo.target.value);
+  // };
   const getDesa = () => {
     getDataDesa((result) => {
       setData_desa(result ?? {});
     });
   };
 
+  const funcSelectedNoSurat = (e) => {
+    const form_data = new FormData();
+    form_data.append('idNoSurat', e.value);
+    form_data.append('id_wizard_template', dataSurat?.id_wizard_template);
+    RequestNoSurat(form_data, (result) => {
+      setNosurat(result);
+    });
+  };
   return (
     <div id='printing-root'>
       {statusEdit ? (
@@ -420,17 +450,18 @@ export default function UpdateSurat(props) {
                         <div className='form-group'>
                           <label htmlFor=''>Format No Surat</label>
                           <Select
-                            options={[{ value: '1', label: 'format-1' }]}
+                            options={listNoSurat}
+                            onChange={funcSelectedNoSurat}
                           />
                         </div>
-                        <div className='form-group'>
-                          <label htmlFor=''>Nomor Surat</label>
-                          <input
-                            type='text'
-                            className='input-text'
-                            onKeyUp={hndelNoSurat}
-                          />
-                        </div>
+                        {/* <div className='form-group'>
+                       <label htmlFor=''>Nomor Surat</label>
+                       <input
+                         type='text'
+                         className='input-text'
+                         onKeyUp={hndelNoSurat}
+                       />
+                     </div> */}
                       </>
                     )}
                   </div>

@@ -16,7 +16,7 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col">No</th>
+                            <th scope="col">NIK</th>
                             <th scope="col">Nama</th>
                             <th scope="col">Aksi</th>
                         </tr>
@@ -47,7 +47,7 @@
                     },
                 });
                 if (getter.status == 200) {
-                    const data = getter?.data?.response ?? [];
+                    const data = getter?.data?.response?.data ?? [];
                     sessionStorage.setItem("main-data", JSON.stringify(data));
 
                     var html = ``;
@@ -65,7 +65,6 @@
                 }
             }
             (async function() {
-
                 async function login() {
                     const form_data = new FormData();
                     form_data.append("username", "phoenix")
