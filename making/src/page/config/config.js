@@ -6,4 +6,4 @@ export const url_printing = 'https://v3.gigades.id/Managements/suratPrint/';
 // public server
 // export const url_api_server = 'http://localhost/v3/api/';
 
-export const url_api_server = 'https://v3.gigades.id/api/';
+export const url_api_server = 'https://v3.gigades.id/rest/api/';
