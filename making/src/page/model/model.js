@@ -3,10 +3,14 @@ import {
   url_assets,
   url_base,
   url_api_server,
+  url_server_api
 } from '../config/config';
 import axios from 'axios';
 import moment from 'moment';
-import { penduduk, perangkat } from '../config/dummy';
+import {
+  penduduk,
+  perangkat
+} from '../config/dummy';
 
 const getpapper = async (cari, respose) => {
   const getSurat = await axios
@@ -59,6 +63,10 @@ const getKopSurat = async (response) => {
 
 const postWizard = (data, respose) => {
   api_post(`${url_api_server}surat/create`, data, respose);
+};
+
+const updatePostWizard = (id, data, respose) => {
+  api_post(`${url_api_server}surat/update/${id}`, data, respose);
 };
 
 async function api_post(url, data, response) {
@@ -146,4 +154,5 @@ export {
   getDataDesa,
   getNoSurat,
   RequestNoSurat,
+  updatePostWizard
 };

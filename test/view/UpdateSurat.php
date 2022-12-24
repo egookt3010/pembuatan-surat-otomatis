@@ -32,16 +32,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js" integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.1.3/axios.min.js" integrity="sha512-0qU9M9jfqPw6FKkPafM3gy2CBAvUWnYVOfNPDYKVuRTel1PrciTj+a9P3loJB+j0QmN2Y0JYQmkBBS8W+mbezg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script>
-        function run(r) {
-            const dataMain = JSON.parse(sessionStorage.getItem("main-data"));
-            sessionStorage.setItem("_surat", JSON.stringify(dataMain.find(x => x.id_surat === r)));
-
-            if (sessionStorage.getItem("_surat") != undefined) {
-                window.location.href = "Edit.php"
-            }
-        }
         async function readData() {
-                const getter = await axios.get("https://v3.gigades.id/rest/api/surat/full-result", {
+                const getter = await axios.get("http://localhost/v3/api/surat/full-result", {
                     headers: {
                         Authorization: 'Bearer ' + sessionStorage.getItem('_token'),
                     },
@@ -49,7 +41,6 @@
                 if (getter.status == 200) {
                     const data = getter?.data?.response?.data ?? [];
                     sessionStorage.setItem("main-data", JSON.stringify(data));
-
                     var html = ``;
                     data.map((_, i) => {
                         html += `<tr>
@@ -69,7 +60,7 @@
                     const form_data = new FormData();
                     form_data.append("username", "phoenix")
                     form_data.append("password", "password")
-                    const getter = await axios.post("https://v3.gigades.id/rest/api/auth/login", form_data).catch((error) => {
+                    const getter = await axios.post("http://localhost/v3/api/auth/login", form_data).catch((error) => {
                         console.log(error)
                     });
                     if (getter) {
@@ -84,9 +75,6 @@
 
         function runEdit(r) {
             const dataMain = JSON.parse(sessionStorage.getItem('main-data'));
-
-            sessionStorage.clear();
-            localStorage.clear();
             sessionStorage.setItem(
                 'dataUpdate',
                 JSON.stringify(dataMain.find((x) => x.id_surat == r))

@@ -1,7 +1,7 @@
-import axios from 'axios';
-import React, { forwardRef, useEffect, useState } from 'react';
-import $ from 'jquery';
-import moment from 'moment';
+import axios from 'axios'
+import React, { forwardRef, useEffect, useState } from 'react'
+import $ from 'jquery'
+import moment from 'moment'
 // import "moment/dist/locale/id";
 import {
   buildAutoDataPenduduk,
@@ -15,76 +15,75 @@ import {
   buildAutoDataOrangtua,
   buildNoSurat,
   buildAutoDataDesa,
-} from './function/main__func';
-import './style/stylePrint.scss';
+} from './function/main__func'
+import './style/stylePrint.scss'
 // redux
-import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 export const Build = forwardRef((props, ref) => {
-  moment.locale('id');
-  const [data, setData] = useState(null);
-  const [penduduk, setpenduduk] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [Codes, setCodes] = useState(null);
-  const [inputName, setInputName] = useState([]);
+  moment.locale('id')
+  const [data, setData] = useState(null)
+  const [penduduk, setpenduduk] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [Codes, setCodes] = useState(null)
+  const [inputName, setInputName] = useState([])
   // ------
-  const [valChange, setValChange] = useState(null);
+  const [valChange, setValChange] = useState(null)
   // redux
-  const getRedux = useSelector((state) => state);
-  const dispatch = useDispatch();
+  const getRedux = useSelector((state) => state)
+  const dispatch = useDispatch()
 
-  const [signiture, setSigniture] = useState(null);
+  const [signiture, setSigniture] = useState(null)
   // --------
   //   effect to get data
   useEffect(() => {
     if (props.code != undefined && props.code != null && props.code != '') {
-      console.log(props?.nosurat);
       var codeBuilding = buildAutoDataPenduduk(
         `<div>${props?.code ?? '<></>'}</div>`,
-        props.penduduk
-      );
+        props.penduduk,
+      )
       // console.log('perangkat', props.perangkat);
       codeBuilding = buildAutoDataOrangtua(
         codeBuilding,
-        props.penduduk.orangtua
-      );
-      codeBuilding = buildAutoDataDesa(codeBuilding, props.dataDesa);
+        props.penduduk.orangtua,
+      )
+      codeBuilding = buildAutoDataDesa(codeBuilding, props.dataDesa)
       // console.log(props.dataDesa);
-      codeBuilding = buildAutoDataPerangkat(codeBuilding, props.perangkat);
+      codeBuilding = buildAutoDataPerangkat(codeBuilding, props.perangkat)
 
       codeBuilding = buildInput(codeBuilding, (resuts) => {
-        setInputName(resuts);
-      });
+        setInputName(resuts)
+      })
 
       codeBuilding = buildSignature(codeBuilding, props.perangkat, (resuts) => {
-        localStorage.setItem('signiture', JSON.stringify(resuts));
-      });
+        localStorage.setItem('signiture', JSON.stringify(resuts))
+      })
 
       codeBuilding = buildAutoComponent(codeBuilding, (res) => {
         // setSigniture(res);
-      });
+      })
 
       if (props.kop != '' && props.kop != null && props.kop != undefined) {
         codeBuilding = buildKopSurat(codeBuilding, props.kop, (result) => {
           // console.log("||/", result);
-        });
+        })
       }
 
       if (props.nosurat != '' && props.nosurat != null) {
         codeBuilding = buildNoSurat(codeBuilding, props.nosurat, (result) => {
           // console.log("||/", result);
-        });
+        })
       }
 
-      setCodes(codeBuilding);
+      setCodes(codeBuilding)
       dispatch({
         type: 'SET_CODE',
         payload: {
           code: `${codeBuilding}`,
         },
-      });
-      setLoading(false);
+      })
+      setLoading(false)
     }
   }, [
     props.code,
@@ -96,13 +95,13 @@ export const Build = forwardRef((props, ref) => {
     props.kop,
     props.nosurat,
     props.dataDesa,
-  ]);
+  ])
 
   useEffect(() => {
     if (props.penduduk != undefined && props.penduduk != null) {
-      setpenduduk(props.penduduk);
+      setpenduduk(props.penduduk)
     }
-  }, [props.penduduk]);
+  }, [props.penduduk])
   //   ====================
 
   // trasformasi manual ------------------------------
@@ -115,11 +114,11 @@ export const Build = forwardRef((props, ref) => {
           {
             id: $(e.target).attr('id'),
             type: $(e.target).attr('type'),
-          }
-        );
-      });
+          },
+        )
+      })
       $('.page').on('click', function (e) {
-        console.log($(e.target).attr('type'));
+        console.log($(e.target).attr('type'))
         if (
           $(e.target).attr('type') == 'text-area' ||
           $(e.target).attr('type') == 'text'
@@ -130,33 +129,33 @@ export const Build = forwardRef((props, ref) => {
             {
               id: $(e.target).attr('id'),
               type: $(e.target).attr('type'),
-            }
-          );
+            },
+          )
         }
-      });
+      })
       $(document).on('click', "[name='signature-swiching']", function (e) {
         if (!e.target.checked) {
           $(
             `img[type='img-auto'][name='img-signature'][fildquery='${$(
-              e.target
-            ).attr('data-id')}']`
-          ).css('opacity', '0');
+              e.target,
+            ).attr('data-id')}']`,
+          ).css('opacity', '0')
         } else {
           $(
             `img[type='img-auto'][name='img-signature'][fildquery='${$(
-              e.target
-            ).attr('data-id')}']`
-          ).css('opacity', '1');
+              e.target,
+            ).attr('data-id')}']`,
+          ).css('opacity', '1')
         }
-      });
+      })
     }
-  }, [$]);
+  }, [$])
   useEffect(() => {
     dispatch({
       type: 'SET_INPUT_NAME',
       payload: inputName,
-    });
-  }, [inputName]);
+    })
+  }, [inputName])
   // --------------------------------------------------
   const styles = () => {
     return `
@@ -175,29 +174,31 @@ export const Build = forwardRef((props, ref) => {
           overflow-wrap: break-word !important;          
       }
   }
-  `;
-  };
+  `
+  }
 
   return (
     <>
       <div
         ref={ref}
-        className='page'
+        className="page"
         style={props?.padding}
         data-size={props?.configPrint?.paperSize ?? 'A4'}
-        data-layout={props?.configPrint?.paperOrientation ?? 'potrain'}>
+        data-layout={props?.configPrint?.paperOrientation ?? 'potrain'}
+      >
         <style>{styles()}</style>
-        <div id='frame-letter' style={{ overflow: 'hidden' }}>
+        <div id="frame-letter" style={{ overflow: 'hidden' }}>
           {Codes != null && (
             <>
               <div
-                id='content'
-                dangerouslySetInnerHTML={{ __html: `${Codes}` }}></div>
+                id="content"
+                dangerouslySetInnerHTML={{ __html: `${Codes}` }}
+              ></div>
             </>
           )}
         </div>
       </div>
     </>
-  );
-});
+  )
+})
 // 1409055210780002

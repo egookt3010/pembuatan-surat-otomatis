@@ -35,14 +35,15 @@
     <script>
         function run(r) {
             const dataMain = JSON.parse(sessionStorage.getItem("main-data"));
-            sessionStorage.setItem("_surat", JSON.stringify(dataMain.find(x => x.id_wizard_template === r)));
+
+            sessionStorage.setItem("_surat", JSON.stringify(dataMain.find(x => x.id_wizard_template == r)));
 
             if (sessionStorage.getItem("_surat") != undefined) {
                 window.location.href = "editor.php"
             }
         }
         async function readData() {
-                const getter = await axios.get("https://v3.gigades.id/rest/api/wizard/getPapper", {
+                const getter = await axios.get("http://localhost/v3/api/wizard/getPapper", {
                     headers: {
                         Authorization: 'Bearer ' + sessionStorage.getItem('_token'),
                     },
@@ -74,7 +75,7 @@
                     const form_data = new FormData();
                     form_data.append("username", "phoenix")
                     form_data.append("password", "password")
-                    const getter = await axios.post("https://v3.gigades.id/rest/api/auth/login", form_data).catch((error) => {
+                    const getter = await axios.post("http://localhost/v3/api/auth/login", form_data).catch((error) => {
                         console.log(error)
                     });
                     if (getter) {
