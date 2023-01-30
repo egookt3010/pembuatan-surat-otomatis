@@ -28,6 +28,10 @@ const getPenduduk = (respose) => {
   api_get(`${url_api_server}wizard/getPenduduk`, respose);
 };
 
+const getJabatan = (respose) => {
+  api_get(`${url_api_server}surat/jabatan`, respose);
+};
+
 const getPendudukByDesa = async (respose) => {
   respose(penduduk);
 };
@@ -153,6 +157,7 @@ export {
   postWizard,
   getDataDesa,
   getNoSurat,
+  getJabatan,
   RequestNoSurat,
   updatePostWizard
 };

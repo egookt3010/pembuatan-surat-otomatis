@@ -15,6 +15,7 @@ import {
   buildAutoDataOrangtua,
   buildNoSurat,
   buildAutoDataDesa,
+  buidAutoJabatan,
 } from './function/main__func'
 import './style/stylePrint.scss'
 // redux
@@ -63,6 +64,7 @@ export const Build = forwardRef((props, ref) => {
       codeBuilding = buildAutoComponent(codeBuilding, (res) => {
         // setSigniture(res);
       })
+      codeBuilding = buidAutoJabatan(codeBuilding, props?.jabatan ?? {})
 
       if (props.kop != '' && props.kop != null && props.kop != undefined) {
         codeBuilding = buildKopSurat(codeBuilding, props.kop, (result) => {
@@ -95,6 +97,7 @@ export const Build = forwardRef((props, ref) => {
     props.kop,
     props.nosurat,
     props.dataDesa,
+    props?.jabatan,
   ])
 
   useEffect(() => {
