@@ -1,9 +1,8 @@
 import $ from 'jquery';
 import moment from 'moment';
-
-// import moment from "moment/min/moment-with-locales";
-// const moment = require("../../node_modules/moment/min/moment-with-locales");
 moment.locale('id');
+
+const configure = require('../../src/System/config/config.json');
 
 function isEmpty(obj) {
   for (var prop in obj) {
@@ -57,9 +56,9 @@ export const buildAutoDataPenduduk = (code, data) => {
           }).prevObject[0];
       }
     }
-    return source != undefined && source != null
-      ? source?.outerHTML ?? source
-      : '';
+    return source != undefined && source != null ?
+      source?.outerHTML ?? source :
+      '';
   } else {
     return source;
   }
@@ -92,9 +91,9 @@ export const buildAutoDataOrangtua = (code, data) => {
           }).prevObject[0];
       }
     }
-    return source != undefined && source != null
-      ? source?.outerHTML ?? source
-      : '';
+    return source != undefined && source != null ?
+      source?.outerHTML ?? source :
+      '';
   } else {
     return source;
   }
@@ -127,9 +126,9 @@ export const buildAutoDataDesa = (code, data) => {
           }).prevObject[0];
       }
     }
-    return source != undefined && source != null
-      ? source?.outerHTML ?? source
-      : '';
+    return source != undefined && source != null ?
+      source?.outerHTML ?? source :
+      '';
   } else {
     return source;
   }
@@ -144,31 +143,31 @@ export const buildInput = (code, responseName) => {
       ObjName.push($($(mGet[i])).attr('name'));
 
       var InputComponent = `<input
-							  type="${$(mGet[i]).attr('input')}"
-							  class='form-input-style-papper inp h-20px shadow-sm ${$(mGet[i]).attr(
-                  'name'
-                )}'
-							  mode="input"
-							  id='${$(mGet[i]).attr('idForm')}'
-							  name='${$(mGet[i]).attr('name')}'
-							  placeholder='...........'
-							  style="width:100px;"
-							  />`;
+                            type="${$(mGet[i]).attr('input')}"
+                            class='form-input-style-papper inp h-20px shadow-sm ${$(
+                              mGet[i]
+                            ).attr('name')}'
+                            mode="input"
+                            id='${$(mGet[i]).attr('idForm')}'
+                            name='${$(mGet[i]).attr('name')}'
+                            placeholder='...........'
+                            style="width:100px;"
+                            />`;
       var InputComponentArea = `<textarea type="${$(mGet[i]).attr(
         'input'
       )}" class='form-input-style inp shadow-sm ${$(mGet[i]).attr('name')}'
-		mode="input"
-		id='${$(mGet[i]).attr('idForm')}'
-		name='${$(mGet[i]).attr('name')}'
-		placeholder='...........'
-		></textarea>`;
+      mode="input"
+      id='${$(mGet[i]).attr('idForm')}'
+      name='${$(mGet[i]).attr('name')}'
+      placeholder='...........'
+      ></textarea>`;
 
       source = $(source)
         .find(`font[type='manual'][name='${$(mGet[i]).attr('name')}']`)
         .replaceWith(
-          $(mGet[i]).attr('input') == 'text-area'
-            ? InputComponentArea
-            : InputComponent
+          $(mGet[i]).attr('input') == 'text-area' ?
+          InputComponentArea :
+          InputComponent
         ).prevObject[0];
     }
     responseName(ObjName);
@@ -178,7 +177,10 @@ export const buildInput = (code, responseName) => {
   }
 };
 
-export const trasformationInputToOutput = (name, value, { id, type }) => {
+export const trasformationInputToOutput = (name, value, {
+  id,
+  type
+}) => {
   if (name != 'signature-swiching') {
     const mGet = $(`[name='${name}']`).replaceWith(
       `<font type=${type} name='${name}' id="${id}" method="dev" mode="output" style="border-bottom:1px solid #ccc">${value}</font>`
@@ -187,25 +189,29 @@ export const trasformationInputToOutput = (name, value, { id, type }) => {
   }
 };
 
-export const trasformationOutputChangeToInput = (name, value, { id, type }) => {
-  var InputComponent = `<input
-	type="${type}"
-	class='form-input-style-papper h-20px shadow-sm ${name}'
-	mode="input"
-	id='${id}'
-	name='${name}'
-	placeholder='...........'
-	value='${value}'
-	style="width:100px;"
-	/>`;
-  var InputComponentArea = `<textarea type="${type}"
-	class='form-input-style-papper h-20px shadow-sm ${name}'
-	mode="input"
-	id='${id}'
-	name='${name}'
-	placeholder='...........'
-	style="white-space: pre-wrap;
-	>${value}</textarea>`;
+export const trasformationOutputChangeToInput = (name, value, {
+  id,
+  type
+}) => {
+  var InputComponent = /*html*/
+    `<input
+  type="${type}"
+  class='form-input-style-papper h-20px shadow-sm ${name}'
+  mode="input"
+  id='${id}'
+  name='${name}'
+  placeholder='...........'
+  value='${value}'
+  style="width:100px;"
+  />`;
+  var InputComponentArea = /*html*/
+    `<textarea type="${type}"
+  class='form-input-style-papper h-20px shadow-sm ${name}'
+  mode="input"
+  id='${id}'
+  name='${name}'
+  placeholder='...........'
+  style="white-space: pre-wrap">${value}</textarea>`;
   if (name != 'signature-swiching') {
     const mGet = $(`font[name='${name}'][mode='output']`).replaceWith(
       type == 'text-area' ? InputComponentArea : InputComponent
@@ -239,35 +245,37 @@ export const buildSignature = (code, data, response) => {
           });
           source =
             $(source)
-              .find(
-                `font[type='auto'][name='signature'][fildquery='${$(
+            .find(
+              `font[type='auto'][name='signature'][fildquery='${$(
                   $(autoGet[i])
                 ).attr('fildquery')}']`
-              )
-              .text(resultset.penduduk.nama_lengkap)
-              .append(
-                `&emsp;<input name='signature-swiching' checked="true" data-id="${$(
-                  $(autoGet[i])
-                ).attr('fildquery')}" id='${
-                  resultset.id_perangkat_desa
-                }' class='switch' type='checkbox' />`
-              )
-              .css({
-                'background-color': 'transparent',
-                color: 'black',
-              }).prevObject[0]?.outerHTML ?? source;
+            )
+            .text(resultset.penduduk.nama_lengkap ?? "")
+            .css({
+              'background-color': 'transparent',
+              color: 'black',
+            }).append(
+              `<font>
+              <input style="position: fixed; margin-top:20px" name='signature-swiching' checked="true" data-id="${$(
+                $(autoGet[i])
+              ).attr('fildquery')}" id='${
+                resultset.id_perangkat_desa
+              }' class='switch' type='checkbox' />
+              </font>`
+            )
+            .prevObject[0]?.outerHTML ?? source;
 
           source =
             $(source)
-              .find(
-                `img[type='img-auto'][name='img-signature'][fildquery='${$(
+            .find(
+              `img[type='img-auto'][name='img-signature'][fildquery='${$(
                   $(autoGet[i])
                 ).attr('fildquery')}']`
-              )
-              .attr(
-                'src',
-                `${configure.Api.server_url}user/signature/${resultset.signature}`
-              ).prevObject[0]?.outerHTML ?? source;
+            )
+            .attr(
+              'src',
+              `${configure.Api.server_url}user/signature/${resultset.signature}`
+            ).prevObject[0]?.outerHTML ?? source;
         }
       }
     }
@@ -295,16 +303,16 @@ export const buildAutoDataPerangkat = (code, data) => {
         if (resultset != undefined && resultset != null) {
           source =
             $(source)
-              .find(
-                `font[type='auto'][name='perangkat'][fildquery='${$(
+            .find(
+              `font[type='auto'][name='perangkat'][fildquery='${$(
                   $(autoGet[i])
                 ).attr('fildquery')}']`
-              )
-              .text(findVal(resultset, $($(autoGet[i])).attr('fildquery')))
-              .css({
-                'background-color': 'transparent',
-                color: 'black',
-              }).prevObject[0]?.outerHTML ?? source;
+            )
+            .text(findVal(resultset, $($(autoGet[i])).attr('fildquery')))
+            .css({
+              'background-color': 'transparent',
+              color: 'black',
+            }).prevObject[0]?.outerHTML ?? source;
         }
       }
     }
@@ -317,8 +325,8 @@ export const buildKopSurat = (code, kop, result) => {
   const autoGet = $(code).find(`div[data-query="kop_surat"]`);
   if (autoGet.length > 0) {
     source =
-      $(code).find(`div[data-query="kop_surat"]`).replaceWith(kop).prevObject[0]
-        ?.outerHTML ?? source;
+      $(code).find(`div[data-query="kop_surat"]`).html(kop).prevObject[0]
+      ?.outerHTML ?? source;
   }
   result(source);
   return source;
@@ -329,8 +337,8 @@ export const buildNoSurat = (code, noSurat, result) => {
   const autoGet = $(code).find(`font[data-query="no_surat"]`);
   if (autoGet.length > 0) {
     source =
-      $(code).find(`font[data-query="no_surat"]`).replaceWith(noSurat)
-        .prevObject[0]?.outerHTML ?? source;
+      $(code).find(`font[data-query="no_surat"]`).text(noSurat)
+      .prevObject[0]?.outerHTML ?? source;
   }
   result(source);
   return source;
@@ -348,8 +356,20 @@ export const buildAutoComponent = (code, response) => {
       ) {
         var value = ``;
         switch ($($(autoGet[i])).attr('fildquery')) {
+          case 'create-now-date':
+            value = moment().format('DD MMMM YYYY');
+            break;
+          case 'create-now-date-time':
+            value = moment().format('Do MMMM YYYY, h:mm:ss');
+            break;
           case 'create-now-date-day':
             value = moment().format('dddd, DD MMMM YYYY');
+            break;
+          case 'create-now-date-hour-day':
+            value = moment().format('dddd,Do MMMM YYYY, h:mm:ss');
+            break;
+          case 'create-hour':
+            value = moment().format('h:mm:ss a');
             break;
 
           default:
@@ -359,16 +379,16 @@ export const buildAutoComponent = (code, response) => {
 
         source =
           $(source)
-            .find(
-              `font[type='auto'][name='component_autometic'][fildquery='${$(
+          .find(
+            `font[type='auto'][name='component_autometic'][fildquery='${$(
                 $(autoGet[i])
               ).attr('fildquery')}']`
-            )
-            ?.text(value)
-            ?.css({
-              'background-color': 'transparent',
-              color: 'black',
-            }).prevObject[0]?.outerHTML ?? source;
+          )
+          ?.text(value)
+          ?.css({
+            'background-color': 'transparent',
+            color: 'black',
+          }).prevObject[0]?.outerHTML ?? source;
       }
     }
   }

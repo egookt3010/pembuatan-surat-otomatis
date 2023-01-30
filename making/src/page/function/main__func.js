@@ -219,6 +219,7 @@ export const trasformationOutputChangeToInput = (name, value, {
   }
 };
 
+
 export const buildSignature = (code, data, response) => {
   let source = code;
   const autoGet = $(code).find(`font[type='auto'][name='signature']`);
@@ -249,18 +250,20 @@ export const buildSignature = (code, data, response) => {
                   $(autoGet[i])
                 ).attr('fildquery')}']`
             )
-            .text(resultset.penduduk.nama_lengkap)
-            .append(
-              `&emsp;<input name='signature-swiching' checked="true" data-id="${$(
-                  $(autoGet[i])
-                ).attr('fildquery')}" id='${
-                  resultset.id_perangkat_desa
-                }' class='switch' type='checkbox' />`
-            )
+            .text(resultset.penduduk.nama_lengkap ?? "")
             .css({
               'background-color': 'transparent',
               color: 'black',
-            }).prevObject[0]?.outerHTML ?? source;
+            }).append(
+              `<font>
+              <input style="position: fixed; margin-top:20px" name='signature-swiching' checked="true" data-id="${$(
+                $(autoGet[i])
+              ).attr('fildquery')}" id='${
+                resultset.id_perangkat_desa
+              }' class='switch' type='checkbox' />
+              </font>`
+            )
+            .prevObject[0]?.outerHTML ?? source;
 
           source =
             $(source)
@@ -280,7 +283,6 @@ export const buildSignature = (code, data, response) => {
   response(sig);
   return source;
 };
-
 export const buildAutoDataPerangkat = (code, data) => {
   let source = code;
   const autoGet = $(code).find(`font[type='auto'][name='perangkat']`);

@@ -17,7 +17,9 @@
         "title": "Penduduk",
         "name": "penduduk",
         "type": "auto",
-        "data_structure": ["penduduk"],
+        "data_structure": [
+          "penduduk"
+        ],
         "parameter": {
           "table": "penduduk",
           "color": "green"
@@ -31,36 +33,98 @@
             "label": "penduduk",
             "attr": "fildQuery",
             "dataset": [
-              { "label": "Nik", "value": "nik" },
-              { "label": "Nomor KK", "value": "no_kk" },
-              { "label": "Nama Lengkap", "value": "nama_lengkap" },
-              { "label": "Jenis Kelamin", "value": "jenis_klamin" },
-              { "label": "Status Perkawinan", "value": "status_perkawinan" },
-              { "label": "Tempat Lahir", "value": "tempat_lahir" },
-              { "label": "Tanggal Lahir", "value": "tanggal_lahir" },
-              { "label": "Agama", "value": "agama" },
-              { "label": "Golongan Darah", "value": "gol_darah" },
-              { "label": "Pendidikan", "value": "pendidikan_terakhir" },
-              { "label": "Pekerjaan", "value": "pekerjaan" },
-              { "label": "Kewarga Negaraan", "value": "kewarga_negaraan" },
-              { "label": "Negara", "value": "negara" },
-              { "label": "Provinsi", "value": "provinsi" },
-              { "label": "Kabupaten", "value": "kabupaten" },
-              { "label": "Kecamatan", "value": "kecamatan" },
-              { "label": "Desa", "value": "desa" },
-              { "label": "Dusun", "value": "dusun" },
-              { "label": "Rw", "value": "rw" },
-              { "label": "Rt", "value": "rt" }
+              {
+                "label": "Nik",
+                "value": "nik"
+              },
+              {
+                "label": "Nomor KK",
+                "value": "no_kk"
+              },
+              {
+                "label": "Nama Lengkap",
+                "value": "nama_lengkap"
+              },
+              {
+                "label": "Jenis Kelamin",
+                "value": "jenis_klamin"
+              },
+              {
+                "label": "Status Perkawinan",
+                "value": "status_perkawinan"
+              },
+              {
+                "label": "Tempat Lahir",
+                "value": "tempat_lahir"
+              },
+              {
+                "label": "Tanggal Lahir",
+                "value": "tanggal_lahir"
+              },
+              {
+                "label": "Agama",
+                "value": "agama"
+              },
+              {
+                "label": "Golongan Darah",
+                "value": "gol_darah"
+              },
+              {
+                "label": "Pendidikan",
+                "value": "pendidikan_terakhir"
+              },
+              {
+                "label": "Pekerjaan",
+                "value": "pekerjaan"
+              },
+              {
+                "label": "Kewarga Negaraan",
+                "value": "kewarga_negaraan"
+              },
+              {
+                "label": "Negara",
+                "value": "negara"
+              },
+              {
+                "label": "Provinsi",
+                "value": "provinsi"
+              },
+              {
+                "label": "Kabupaten",
+                "value": "kabupaten"
+              },
+              {
+                "label": "Kecamatan",
+                "value": "kecamatan"
+              },
+              {
+                "label": "Desa",
+                "value": "desa"
+              },
+              {
+                "label": "Dusun",
+                "value": "dusun"
+              },
+              {
+                "label": "Rw",
+                "value": "rw"
+              },
+              {
+                "label": "Rt",
+                "value": "rt"
+              }
             ]
           }
         ]
       },
-
       {
         "name": "orangtua",
         "title": "Orangtua",
         "type": "auto",
-        "data_structure": ["penduduk", "orangtua"],
+        "data_structure": [
+          "penduduk",
+          "orangtua"
+        ],
         "parameter": {
           "table": "orangtua",
           "color": "orange"
@@ -74,11 +138,26 @@
             "label": "orangtua",
             "attr": "fildQuery",
             "dataset": [
-              { "label": "Nomor KK", "value": "no_kk" },
-              { "label": "Nik Ayah", "value": "nik_ayah" },
-              { "label": "Nama Ayah", "value": "nama_ayah" },
-              { "label": "Nik Ibu", "value": "nik_ibu" },
-              { "label": "Nama Ibu", "value": "nama_ibu" }
+              {
+                "label": "Nomor KK",
+                "value": "no_kk"
+              },
+              {
+                "label": "Nik Ayah",
+                "value": "nik_ayah"
+              },
+              {
+                "label": "Nama Ayah",
+                "value": "nama_ayah"
+              },
+              {
+                "label": "Nik Ibu",
+                "value": "nik_ibu"
+              },
+              {
+                "label": "Nama Ibu",
+                "value": "nama_ibu"
+              }
             ]
           }
         ]
@@ -100,17 +179,50 @@
             "attr": "fildQuery",
             "primary": true,
             "dataset": [
-              { "label": "Nik", "value": "nik" },
-              { "label": "Kode Desa", "value": "kode_desa" },
-              { "label": "Nomor KK", "value": "no_kk" },
-              { "label": "Nama Lengkap", "value": "nama_lengkap" },
-              { "label": "Jenis Kelamin", "value": "jenis_klamin" },
-              { "label": "Status Perkawinan", "value": "status_perkawinan" },
-              { "label": "Tempat Lahir", "value": "sungai langsat" },
-              { "label": "Tanggal Lahir", "value": "tanggal_lahir" },
-              { "label": "Agama", "value": "agama" },
-              { "label": "Golongan Darah", "value": "gol_darah" },
-              { "label": "Pendidikan", "value": "pendidikan_terakhir" }
+              {
+                "label": "Nik",
+                "value": "nik"
+              },
+              {
+                "label": "Kode Desa",
+                "value": "kode_desa"
+              },
+              {
+                "label": "Nomor KK",
+                "value": "no_kk"
+              },
+              {
+                "label": "Nama Lengkap",
+                "value": "nama_lengkap"
+              },
+              {
+                "label": "Jenis Kelamin",
+                "value": "jenis_klamin"
+              },
+              {
+                "label": "Status Perkawinan",
+                "value": "status_perkawinan"
+              },
+              {
+                "label": "Tempat Lahir",
+                "value": "sungai langsat"
+              },
+              {
+                "label": "Tanggal Lahir",
+                "value": "tanggal_lahir"
+              },
+              {
+                "label": "Agama",
+                "value": "agama"
+              },
+              {
+                "label": "Golongan Darah",
+                "value": "gol_darah"
+              },
+              {
+                "label": "Pendidikan",
+                "value": "pendidikan_terakhir"
+              }
             ]
           },
           {
@@ -119,9 +231,18 @@
             "attr": "jabatan",
             "primary": false,
             "dataset": [
-              { "label": "Kepala Desa", "value": "KEPALA DESA" },
-              { "label": "Sektretaris Desa", "value": "SEKRETARIS DESA" },
-              { "label": "Perangkat Desa", "value": "Perangkat Desa" }
+              {
+                "label": "Kepala Desa",
+                "value": "KEPALA DESA"
+              },
+              {
+                "label": "Sektretaris Desa",
+                "value": "SEKRETARIS DESA"
+              },
+              {
+                "label": "Perangkat Desa",
+                "value": "PERANGKAT DESA"
+              }
             ]
           }
         ]
@@ -161,7 +282,9 @@
         "title": "Data Desa",
         "name": "desa",
         "type": "auto",
-        "data_structure": ["desa"],
+        "data_structure": [
+          "desa"
+        ],
         "parameter": {
           "table": "desa",
           "color": "#076782"
@@ -175,11 +298,26 @@
             "label": "Data Desa",
             "attr": "fildQuery",
             "dataset": [
-              { "label": "Negara", "value": "negara" },
-              { "label": "Provinsi", "value": "nama_provinsi" },
-              { "label": "Kabupaten", "value": "nama_kabupaten" },
-              { "label": "Kecamatan", "value": "nama_kecamatan" },
-              { "label": "Desa", "value": "nama_desa" }
+              {
+                "label": "Negara",
+                "value": "negara"
+              },
+              {
+                "label": "Provinsi",
+                "value": "nama_provinsi"
+              },
+              {
+                "label": "Kabupaten",
+                "value": "nama_kabupaten"
+              },
+              {
+                "label": "Kecamatan",
+                "value": "nama_kecamatan"
+              },
+              {
+                "label": "Desa",
+                "value": "nama_desa"
+              }
             ]
           }
         ]
@@ -201,23 +339,44 @@
             "attr": "fildQuery",
             "primary": true,
             "dataset": [
-              { "label": "dd mm yyyy", "value": "create-now-date" },
-              { "label": "dd mm yyyy HH:SS", "value": "create-now-date-time" },
-              { "label": "Day, dd mm yyyy ", "value": "create-now-date-day" },
+              {
+                "label": "dd mm yyyy",
+                "value": "create-now-date"
+              },
+              {
+                "label": "dd mm yyyy HH:SS",
+                "value": "create-now-date-time"
+              },
+              {
+                "label": "Day, dd mm yyyy ",
+                "value": "create-now-date-day"
+              },
               {
                 "label": "Day, dd mm yyyy HH:SS",
                 "value": "create-now-date-hour-day"
               },
-              { "label": "Jam", "value": "create-hour" }
+              {
+                "label": "Jam",
+                "value": "create-hour"
+              }
             ]
           }
         ]
       }
     ],
     "ManualAttributeType": [
-      { "label": "text", "value": "text" },
-      { "label": "text-area", "value": "text-area" },
-      { "label": "Tanggal", "value": "date" }
+      {
+        "label": "text",
+        "value": "text"
+      },
+      {
+        "label": "text-area",
+        "value": "text-area"
+      },
+      {
+        "label": "Tanggal",
+        "value": "date"
+      }
     ],
     "AppendStaticHtmlattributeType": [
       {
@@ -249,64 +408,122 @@
         "id": "paperSize",
         "defaultValue": "A4",
         "select": [
-          { "label": "A4", "value": "A4", "width": "210", "height": "297" },
-          { "label": "A5", "value": "A5", "width": "148.5", "height": "210" }
+          {
+            "label": "A4",
+            "value": "A4",
+            "width": "210",
+            "height": "297"
+          },
+          {
+            "label": "A5",
+            "value": "A5",
+            "width": "148.5",
+            "height": "210"
+          }
         ]
       },
       {
         "type": "text-group-select",
         "label": "Margin Top",
-        "name": ["marginTop", "satuanTop"],
+        "name": [
+          "marginTop",
+          "satuanTop"
+        ],
         "id": "top",
         "defaultValue": "2",
         "selectedSatuan": "cm",
         "idSelect": "select_top",
         "select": [
-          { "label": "Cm", "value": "cm" },
-          { "label": "mm", "value": "mm" },
-          { "label": "Inci", "value": "inci" }
+          {
+            "label": "Cm",
+            "value": "cm"
+          },
+          {
+            "label": "mm",
+            "value": "mm"
+          },
+          {
+            "label": "Inci",
+            "value": "inci"
+          }
         ]
       },
       {
         "type": "text-group-select",
         "label": "Margin Right",
-        "name": ["marginRight", "satuanRight"],
+        "name": [
+          "marginRight",
+          "satuanRight"
+        ],
         "id": "right",
         "defaultValue": "2",
         "selectedSatuan": "cm",
         "idSelect": "select_right",
         "select": [
-          { "label": "Cm", "value": "cm" },
-          { "label": "mm", "value": "mm" },
-          { "label": "Inci", "value": "inci" }
+          {
+            "label": "Cm",
+            "value": "cm"
+          },
+          {
+            "label": "mm",
+            "value": "mm"
+          },
+          {
+            "label": "Inci",
+            "value": "inci"
+          }
         ]
       },
       {
         "type": "text-group-select",
         "label": "Margin Left",
-        "name": ["marginLeft", "satuanLeft"],
+        "name": [
+          "marginLeft",
+          "satuanLeft"
+        ],
         "id": "left",
         "defaultValue": "2",
         "selectedSatuan": "cm",
         "idSelect": "select_left",
         "select": [
-          { "label": "Cm", "value": "cm" },
-          { "label": "mm", "value": "mm" },
-          { "label": "Inci", "value": "inci" }
+          {
+            "label": "Cm",
+            "value": "cm"
+          },
+          {
+            "label": "mm",
+            "value": "mm"
+          },
+          {
+            "label": "Inci",
+            "value": "inci"
+          }
         ]
       },
       {
         "type": "text-group-select",
         "label": "Margin Bottom",
-        "name": ["marginBottom", "satuanBottom"],
+        "name": [
+          "marginBottom",
+          "satuanBottom"
+        ],
         "id": "bottom",
         "defaultValue": "2",
         "selectedSatuan": "cm",
         "idSelect": "select_bottom",
         "select": [
-          { "label": "Cm", "value": "cm" },
-          { "label": "mm", "value": "mm" },
-          { "label": "Inci", "value": "inci" }
+          {
+            "label": "Cm",
+            "value": "cm"
+          },
+          {
+            "label": "mm",
+            "value": "mm"
+          },
+          {
+            "label": "Inci",
+            "value": "inci"
+          }
         ]
       },
       {
@@ -317,8 +534,14 @@
         "defaultValue": "portrait",
         "idSelect": "select_paperOrientation",
         "select": [
-          { "label": "Portrait", "value": "portrait" },
-          { "label": "Landscape", "value": "landscape" }
+          {
+            "label": "Portrait",
+            "value": "portrait"
+          },
+          {
+            "label": "Landscape",
+            "value": "landscape"
+          }
         ]
       }
     ]

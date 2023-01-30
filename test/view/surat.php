@@ -90,13 +90,10 @@
 
         function runEdit(r) {
             const dataMain = JSON.parse(sessionStorage.getItem('main-data'));
-            sessionStorage.clear();
-            localStorage.clear();
+            const selected = JSON.stringify(dataMain.find((x) => x.id_wizard_template == r));
             sessionStorage.setItem(
-                'dataUpdate',
-                JSON.stringify(dataMain.find((x) => x.id_wizard_template === r))
-            );
-
+                'dataUpdate', selected
+            )
             if (sessionStorage.getItem('dataUpdate') != undefined) {
                 sessionStorage.removeItem('main-data');
                 window.location.href = '../wizard/index.html';

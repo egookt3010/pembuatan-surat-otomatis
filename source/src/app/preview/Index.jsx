@@ -1,56 +1,60 @@
-import React, { useRef, useEffect, useState } from "react";
-import { useReactToPrint } from "react-to-print";
-import $ from "jquery";
-import styled from "styled-components";
-import { FaSpinner, FaArrowCircleLeft, FaPrint, FaCog } from "react-icons/fa";
-import Modal from "react-responsive-modal";
-import axios from "axios";
-// redux
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
-// internal import =====================================
-import { getPapperRequest } from "../System/Model/model_api";
-import { ComponentToPrint } from "./ComponentToPrint";
-import Content from "./Build";
-// =====================================================
+import React, { useRef, useEffect, useState } from 'react'
+import './scss/style.scss'
+import { useReactToPrint } from 'react-to-print'
+import { ComponentToPrint } from './ComponentToPrint'
+import $ from 'jquery'
 
-// style ==============================================
-import "./scss/style.scss";
-// ====================================================
+import styled from 'styled-components'
+import { FaSpinner, FaArrowCircleLeft, FaPrint, FaCog } from 'react-icons/fa'
+
+import Content from './Build'
+import Modal from 'react-responsive-modal'
+import axios from 'axios'
+// redux
+import { useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 // test
-import { pendudukDummy, Perangkat } from "../System/data/dummy";
+import { pendudukDummy, Perangkat } from '../data/dummy'
 
-export default function Index(props) {
-  const [data, setData] = useState(null);
-  const [penduduk, setpenduduk] = useState(null);
-  const [configPrint, setConfigPrint] = useState(null);
-  const componentRef = useRef();
+export default function Letter(props) {
+  const [data, setData] = useState(null)
+  const [penduduk, setpenduduk] = useState(null)
+  const [configPrint, setConfigPrint] = useState(null)
+  const componentRef = useRef()
   const Setterpadding = {
-    paddingTop: configPrint != undefined && configPrint.paperMargin.top,
-    paddingBottom: configPrint != undefined && configPrint.paperMargin.bottom,
-    paddingLeft: configPrint != undefined && configPrint.paperMargin.left,
-    paddingRight: configPrint != undefined && configPrint.paperMargin.right,
-  };
-  const [open, setOpen] = useState(false);
-  const [openConfigs, setOpenConfigs] = useState(false);
-  const [content, setContent] = useState(``);
+    paddingTop:
+      configPrint != undefined &&
+      `${configPrint.paperMargin.top[0]}${configPrint.paperMargin.top[1]}`,
+    paddingBottom:
+      configPrint != undefined &&
+      `${configPrint.paperMargin.bottom[0]}${configPrint.paperMargin.bottom[1]}`,
+    paddingLeft:
+      configPrint != undefined &&
+      `${configPrint.paperMargin.left[0]}${configPrint.paperMargin.left[1]}`,
+    paddingRight:
+      configPrint != undefined &&
+      `${configPrint.paperMargin.right[0]}${configPrint.paperMargin.right[1]}`,
+  }
+  const [open, setOpen] = useState(false)
+  const [openConfigs, setOpenConfigs] = useState(false)
+  const [content, setContent] = useState(``)
   useEffect(() => {
     if (props.open) {
-      setOpen(props.open);
+      setOpen(props.open)
     }
-  }, [props.open]);
-  const [loadingNext, setLoadingNext] = useState(false);
+  }, [props.open])
+  const [loadingNext, setLoadingNext] = useState(false)
 
-  const getRedux = useSelector((state) => state);
-  const dispatch = useDispatch();
+  const getRedux = useSelector((state) => state)
+  const dispatch = useDispatch()
 
-  const onOpenModal = () => setOpen(true);
-  const onCloseModal = () => setOpen(false);
+  const onOpenModal = () => setOpen(true)
+  const onCloseModal = () => setOpen(false)
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
-  });
+  })
 
   useEffect(() => {
     // getPapperRequest(4, (res) => {
@@ -58,70 +62,70 @@ export default function Index(props) {
     //   setConfigPrint(JSON.parse(res.config_print));
     //   setpenduduk(pendudukDummy);
     // });
-    setData(localStorage.getItem("_contens"));
-    setConfigPrint(JSON.parse(localStorage.getItem("config")).papperSetting);
-    setpenduduk(pendudukDummy);
-  }, []);
+    setData(localStorage.getItem('_contens'))
+    setConfigPrint(JSON.parse(localStorage.getItem('config')).papperSetting)
+    setpenduduk(pendudukDummy)
+  }, [])
 
   const hndelGetPenduduk = () => {
     // setLoadingNext(true);
 
     // getDataPenduduk($("[name=nik]").val(), (res) => {
     //   setpenduduk(res);
-    onCloseModal();
+    onCloseModal()
     //   setLoadingNext(false);
     // });
-  };
+  }
   const hndelBack = () => {
-    dispatch({ type: "PREVIEW", payload: "hide-preview" });
-  };
+    dispatch({ type: 'PREVIEW', payload: 'hide-preview' })
+  }
 
   const hndelCetak = () => {
-    if ($("#frame-letter").find(".inp").length) {
-      $("#frame-letter").find(".inp")[0].focus();
+    if ($('#frame-letter').find('.inp').length) {
+      $('#frame-letter').find('.inp')[0].focus()
     } else {
       // const cont =
       //   $("#frame-letter div").find("iframe")[0].contentWindow.document.body
       //     .innerHTML;
 
       setContent(
-        $("#frame-letter div").find(`font[method='dev']`).css("border", "none")
-          .prevObject[0]?.innerHTML ?? ``
-      );
-      var SetValValue = [];
+        $('#frame-letter div').find(`font[method='dev']`).css('border', 'none')
+          .prevObject[0]?.innerHTML ?? ``,
+      )
+      var SetValValue = []
       getRedux.dataPrinting.nameManulInput.map((_, i) => {
         SetValValue.push({
           name: _,
           value: $(content)
-            .find("[name=" + _ + "]")
+            .find('[name=' + _ + ']')
             .text(),
-        });
-      });
+        })
+      })
       dispatch({
-        type: "SET_VALUE_MANUAL_INPUT",
+        type: 'SET_VALUE_MANUAL_INPUT',
         payload: SetValValue,
-      });
+      })
       // console.log(getRedux);
       const TimePrint = setInterval(() => {
-        handlePrint();
-        clearInterval(TimePrint);
-      }, 1000);
+        handlePrint()
+        clearInterval(TimePrint)
+      }, 1000)
     }
-  };
+  }
 
   const parsingProps = {
     penduduk: penduduk,
     perangkat: Perangkat,
-  };
+  }
 
   return (
-    <div id='printing'>
-      <div className='top-menu-printing'>
-        <button className='btn-back-printing' onClick={hndelBack}>
+    <div id="printing">
+      <div className="top-menu-printing">
+        <button className="btn-back-printing" onClick={hndelBack}>
           <FaArrowCircleLeft size={16} />
         </button>
         <div>
-          <button className='btn-printing' onClick={hndelCetak}>
+          <button className="btn-printing" onClick={hndelCetak}>
             <FaPrint size={16} />
           </button>
           {/* <button
@@ -133,7 +137,7 @@ export default function Index(props) {
           </button> */}
         </div>
       </div>
-      <div style={{ display: "none" }}>
+      <div style={{ display: 'none' }}>
         <ComponentToPrint
           ref={componentRef}
           content={content}
@@ -147,49 +151,54 @@ export default function Index(props) {
         open={open}
         // onClose={onCloseModal}
         closeOnEsc={false}
-        center>
+        center
+      >
         <div
-          className='cards p-3'
-          style={{ width: "400px", background: "#fff" }}>
+          className="cards p-3"
+          style={{ width: '400px', background: '#fff' }}
+        >
           <div
-            className='from-group mb-1'
+            className="from-group mb-1"
             style={{
-              width: "100%",
-            }}>
-            <label htmlFor='' className='labels'>
+              width: '100%',
+            }}
+          >
+            <label htmlFor="" className="labels">
               NIK
             </label>
-            <div className='text-left msg-inp'>
+            <div className="text-left msg-inp">
               {/* <i>label kan menjadi label pada text input</i> */}
             </div>
             <input
-              type='text'
-              className='form-input-style h-30px shadow-sm'
-              style={{ border: "1px solid #ccc" }}
-              name='nik'
-              placeholder='lebel atribut'
+              type="text"
+              className="form-input-style h-30px shadow-sm"
+              style={{ border: '1px solid #ccc' }}
+              name="nik"
+              placeholder="lebel atribut"
             />
           </div>
           <div
             style={{
-              width: "100%",
-              marginTop: "10px",
-              display: "flex",
-              justifyContent: "flex-end",
-            }}>
+              width: '100%',
+              marginTop: '10px',
+              display: 'flex',
+              justifyContent: 'flex-end',
+            }}
+          >
             <button
               onClick={hndelGetPenduduk}
-              className='btn-ui'
+              className="btn-ui"
               style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                fontWeight: "bold",
-              }}>
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                fontWeight: 'bold',
+              }}
+            >
               {loadingNext && (
                 <FaSpinner
-                  className='icon_pulse'
-                  style={{ marginRight: "10px" }}
+                  className="icon_pulse"
+                  style={{ marginRight: '10px' }}
                 />
               )}
               <span>Next</span>
@@ -203,47 +212,51 @@ export default function Index(props) {
         open={openConfigs}
         // onClose={onCloseModal}
         closeOnEsc={false}
-        center>
-        <div className='cards p-3' style={{ width: "400px" }}>
+        center
+      >
+        <div className="cards p-3" style={{ width: '400px' }}>
           <div
-            className='from-group mb-1'
+            className="from-group mb-1"
             style={{
-              width: "100%",
-            }}>
-            <label htmlFor='' className='labels'>
+              width: '100%',
+            }}
+          >
+            <label htmlFor="" className="labels">
               NIK
             </label>
-            <div className='text-left msg-inp'>
+            <div className="text-left msg-inp">
               {/* <i>label kan menjadi label pada text input</i> */}
             </div>
             <input
-              type='text'
-              className='form-input-style h-30px shadow-sm'
-              style={{ border: "1px solid #ccc" }}
-              name='nik'
-              placeholder='lebel atribut'
+              type="text"
+              className="form-input-style h-30px shadow-sm"
+              style={{ border: '1px solid #ccc' }}
+              name="nik"
+              placeholder="lebel atribut"
             />
           </div>
           <div
             style={{
-              width: "100%",
-              marginTop: "10px",
-              display: "flex",
-              justifyContent: "flex-end",
-            }}>
+              width: '100%',
+              marginTop: '10px',
+              display: 'flex',
+              justifyContent: 'flex-end',
+            }}
+          >
             <button
               onClick={hndelGetPenduduk}
-              className='btn-ui'
+              className="btn-ui"
               style={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                fontWeight: "bold",
-              }}>
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                fontWeight: 'bold',
+              }}
+            >
               {loadingNext && (
                 <FaSpinner
-                  className='icon_pulse'
-                  style={{ marginRight: "10px" }}
+                  className="icon_pulse"
+                  style={{ marginRight: '10px' }}
                 />
               )}
               <span>Next</span>
@@ -253,15 +266,16 @@ export default function Index(props) {
       </Modal>
 
       {/* ================================================ */}
-      <div className='mt-5 mb-5'>
+      <div className="mt-5 mb-5">
         <div
-          className='page'
+          className="page"
           style={Setterpadding}
           data-size={configPrint != null && configPrint.paperSize}
-          data-layout={configPrint != null && configPrint.paperOrientation}>
+          data-layout={configPrint != null && configPrint.paperOrientation}
+        >
           <Content code={data ?? null} {...parsingProps} />
         </div>
       </div>
     </div>
-  );
+  )
 }
