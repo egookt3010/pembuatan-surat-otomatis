@@ -144,6 +144,7 @@ export const buildInput = (code, responseName) => {
 
       var InputComponent = `<input
                             type="${$(mGet[i]).attr('input')}"
+                            onkeypress="this.style.width = ((this.value.length + 1) * 8) + 'px';"
                             class='form-input-style-papper inp h-20px shadow-sm ${$(
                               mGet[i]
                             ).attr('name')}'
