@@ -7,3 +7,4 @@ export const url_printing = 'https://v3.gigades.id/Managements/suratPrint/';
 // export const url_api_server = 'http://localhost/v3/api/';
 
 export const url_api_server = 'https://v3.gigades.id/rest/api/';
+export const main_url_public = 'https://v3.gigades.id/rest/public/';

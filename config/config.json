@@ -1,6 +1,7 @@
 {
   "Api": {
-    "base_url": "http://prphoenix.gigades.id/"
+    "base_url": "http://prphoenix.gigades.id/",
+    "site_url": "https://v3.gigades.id/"
   },
   "ActionUrl": {
     "request_url": "https://v3.gigades.id/rest/api/wizard/getPapperRequest",

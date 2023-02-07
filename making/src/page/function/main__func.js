@@ -1,8 +1,10 @@
 import $ from 'jquery';
 import moment from 'moment';
 moment.locale('id');
-
-const configure = require('../../System/config/config.json');
+import {
+    main_url_public
+  } from '../config/config'
+// const configure = require('../../System/config/config.json');
 
 function isEmpty(obj) {
     for (var prop in obj) {
@@ -290,7 +292,7 @@ export const buildSignature = (code, data, response) => {
                         )
                         .attr(
                             'src',
-                            `${configure.Api.server_url}user/signature/${resultset.signature}`
+                            `${main_url_public}user/signature/${resultset.signature}`
                         ).prevObject[0]?.outerHTML ?? source;
                 }
             }
