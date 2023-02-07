@@ -248,17 +248,29 @@ export default function Surat(props) {
               })
               form_data.append('data_lampiran', JSON.stringify(lampiran))
             }
-            postWizard(form_data, (res) => {
-              // console.log(res);
-              const TimePrint = setInterval(() => {
-                $('.containerLoadingFull')
-                  .addClass('hide-load')
-                  .removeClass('show-load')
-                // handlePrint();
-                window.open(url_printing + res?.data?.id_surat)
-                clearInterval(TimePrint)
-              }, 1000)
-            })
+            postWizard(
+              form_data,
+              (res) => {
+                // console.log(res);
+                const TimePrint = setInterval(() => {
+                  $('.containerLoadingFull')
+                    .addClass('hide-load')
+                    .removeClass('show-load')
+                  // handlePrint();
+                  window.open(url_printing + res?.data?.id_surat)
+                  clearInterval(TimePrint)
+                }, 1000)
+              },
+              (err) => {
+                swal({
+                  title: 'Oops!',
+                  text:
+                    'Kesalahan saat membuat surat, Silahkan ulangi. jika masin gagal coba reload.',
+                  icon: 'error',
+                  button: 'OK',
+                })
+              },
+            )
           }
         } else {
           $('.containerLoadingFull')

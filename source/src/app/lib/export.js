@@ -23,7 +23,7 @@ export function exports_data(props, result) {
   form_data.append('config', config);
   form_data.append('manual_name', manualName);
   form_data.append('attribute', JSON.stringify(attribute));
-
+  
   export_wizard(form_data, (res) => {
     var refreshIntervalId = setInterval(() => {
       swal('Success', 'Export Success', 'success').then((ev) => {

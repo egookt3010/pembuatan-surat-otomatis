@@ -3,38 +3,35 @@ import {
   url_assets,
   url_base,
   url_api_server,
-  url_server_api
-} from '../config/config';
-import axios from 'axios';
-import moment from 'moment';
-import {
-  penduduk,
-  perangkat
-} from '../config/dummy';
+  url_server_api,
+} from '../config/config'
+import axios from 'axios'
+import moment from 'moment'
+import { penduduk, perangkat } from '../config/dummy'
 
 const getpapper = async (cari, respose) => {
   const getSurat = await axios
     .get(`${url_api_server}wizard/getPapper/${cari}`)
     .catch((err) => {
-      console.log(err);
-    });
-  respose(getSurat);
-};
+      console.log(err)
+    })
+  respose(getSurat)
+}
 const getSearchPenduduk = (searching, respose) => {
-  api_get(`${url_api_server}wizard/getPenduduk/${searching}`, respose);
-};
+  api_get(`${url_api_server}wizard/getPenduduk/${searching}`, respose)
+}
 
 const getPenduduk = (respose) => {
-  api_get(`${url_api_server}wizard/getPenduduk`, respose);
-};
+  api_get(`${url_api_server}wizard/getPenduduk`, respose)
+}
 
 const getJabatan = (respose) => {
-  api_get(`${url_api_server}surat/jabatan`, respose);
-};
+  api_get(`${url_api_server}surat/jabatan`, respose)
+}
 
 const getPendudukByDesa = async (respose) => {
-  respose(penduduk);
-};
+  respose(penduduk)
+}
 const getDataPerangkat = async (response) => {
   const _gets = await axios
     .get(`${url_api_server}perangkat/getPerangkatDesa`, {
@@ -43,12 +40,12 @@ const getDataPerangkat = async (response) => {
       },
     })
     .catch((err) => {
-      response(err.respose);
-    });
+      response(err.respose)
+    })
   if (_gets) {
-    response(_gets?.data);
+    response(_gets?.data)
   }
-};
+}
 
 const getKopSurat = async (response) => {
   const _gets = await axios
@@ -58,32 +55,36 @@ const getKopSurat = async (response) => {
       },
     })
     .catch((err) => {
-      response(err.respose);
-    });
+      response(err.respose)
+    })
   if (_gets) {
-    response(_gets?.data);
+    response(_gets?.data)
   }
-};
+}
 
 const postWizard = (data, respose) => {
-  api_post(`${url_api_server}surat/create`, data, respose);
-};
+  api_post(`${url_api_server}surat/create`, data, respose)
+}
 
 const updatePostWizard = (id, data, respose) => {
-  api_post(`${url_api_server}surat/update/${id}`, data, respose);
-};
+  api_post(`${url_api_server}surat/update/${id}`, data, respose)
+}
 
-async function api_post(url, data, response) {
+async function api_post(url, data, response, error) {
   try {
-    const res = await axios.post(url, data, {
-      headers: {
-        Authorization: 'Bearer ' + sessionStorage.getItem('_token'),
-      },
-    });
-    response(res.data);
+    const res = await axios
+      .post(url, data, {
+        headers: {
+          Authorization: 'Bearer ' + sessionStorage.getItem('_token'),
+        },
+      })
+      .catch((err) => {
+        error(err)
+      })
+    response(res.data)
     // console.log(sessionStorage.getItem("_token"));
-  } catch (error) {
-    console.log(error);
+  } catch (errors) {
+    error(errors)
   }
 }
 
@@ -95,12 +96,12 @@ const getDataDesa = async (response) => {
       },
     })
     .catch((err) => {
-      response(err.respose);
-    });
+      response(err.respose)
+    })
   if (__gets) {
-    response(__gets?.data);
+    response(__gets?.data)
   }
-};
+}
 
 const getNoSurat = async (response) => {
   const __gets = await axios
@@ -110,12 +111,12 @@ const getNoSurat = async (response) => {
       },
     })
     .catch((err) => {
-      response(err.respose);
-    });
+      response(err.respose)
+    })
   if (__gets) {
-    response(__gets?.data);
+    response(__gets?.data)
   }
-};
+}
 
 const RequestNoSurat = async (req, res) => {
   const __gets = await axios
@@ -125,12 +126,12 @@ const RequestNoSurat = async (req, res) => {
       },
     })
     .catch((err) => {
-      res(err.respose);
-    });
+      res(err.respose)
+    })
   if (__gets) {
-    res(__gets?.data);
+    res(__gets?.data)
   }
-};
+}
 
 async function api_get(url, response) {
   const ___gets = await axios
@@ -140,10 +141,10 @@ async function api_get(url, response) {
       },
     })
     .catch((err) => {
-      response(err.respose);
-    });
+      response(err.respose)
+    })
   if (___gets.status != undefined) {
-    response(___gets);
+    response(___gets)
   }
 }
 
@@ -159,5 +160,5 @@ export {
   getNoSurat,
   getJabatan,
   RequestNoSurat,
-  updatePostWizard
-};
+  updatePostWizard,
+}
