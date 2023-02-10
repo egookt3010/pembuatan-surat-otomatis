@@ -44,6 +44,7 @@ import {
   getNoSurat,
   getJabatan,
   RequestNoSurat,
+  sendWa,
 } from './model/model'
 import { url_printing } from './config/config'
 import { CheckKopSurat, CheckNoSurat } from './function/main__func'
@@ -82,6 +83,8 @@ export default function Surat(props) {
   const [dataLampiran, setDataLampiran] = useState([])
   const [fileLampiran, setFileLampiran] = useState([])
   const [listNoSurat, setListNoSurat] = useState([])
+
+  const [hndelSignatures, setHndelSignatures] = useState([])
 
   // ////////////////////////////////////////////////////////////
   // useEffect(() => {
@@ -240,7 +243,8 @@ export default function Surat(props) {
             form_data.append('no_surat', noSurat ?? '')
             form_data.append('perangkat', JSON.stringify(dataPerangkat))
             form_data.append('config', JSON.stringify(configPrint))
-            form_data.append('input', JSON.stringify(SetValValue))
+            form_data.append('form_entry', JSON.stringify(SetValValue))
+            form_data.append('signature', JSON.stringify(hndelSignatures))
             if (lampiran.length > 0) {
               lampiran.map((_o, i) => {
                 var input = document.getElementById(`${_o.name}`)
@@ -251,7 +255,20 @@ export default function Surat(props) {
             postWizard(
               form_data,
               (res) => {
-                // console.log(res);
+                console.log('LL', res)
+                if (res?.status == true) {
+                  if (res?.token_signature.length > 0) {
+                    res?.token_signature?.map((x) => {
+                      sendWa(
+                        x?.perangkat?.no_telp,
+                        `sebuah surat dengan nama ${x?.surat?.wizard?.name} dari ${x?.surat?.penduduk?.nama_lengkap} meminta validasi tanda tangan anda, lihat surat. https://v3.gigades.id/Surat?acc=${x?.uid}`,
+                        (results) => {
+                          console.log(results)
+                        },
+                      )
+                    })
+                  }
+                }
                 const TimePrint = setInterval(() => {
                   $('.containerLoadingFull')
                     .addClass('hide-load')
@@ -356,7 +373,9 @@ export default function Surat(props) {
       setNosurat(result)
     })
   }
-
+  const signature_function = (args) => {
+    setHndelSignatures(args)
+  }
   return (
     <div id="printing-root">
       {statusEdit ? (
@@ -415,6 +434,7 @@ export default function Surat(props) {
               nosurat={noSurat ?? ''}
               dataDesa={data_desa ?? {}}
               jabatan={data_jabatan ?? []}
+              signature_function={signature_function}
             />
             {/* <div
               className='page'

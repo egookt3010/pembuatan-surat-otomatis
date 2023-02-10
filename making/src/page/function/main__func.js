@@ -14,6 +14,17 @@ function isEmpty(obj) {
   return JSON.stringify(obj) === JSON.stringify({})
 }
 
+function __empty(args) {
+  if (args == 'null') return true
+  if (args == '') return true
+  if (args == ' ') return true
+  if (args == 'undefined') return true
+  if (args == null) return true
+  if (args == undefined) return true
+  if (args == false) return true
+  return false
+}
+
 function findVal(object, key) {
   var value
   Object.keys(object).some(function (k) {
@@ -28,7 +39,7 @@ function findVal(object, key) {
   })
   return value
 }
-function __empty(args) {
+function empty(args) {
   if (args == 'null') return true
   if (args == '') return true
   if (args == ' ') return true
@@ -245,6 +256,14 @@ export const buildSignature = (code, data, response) => {
             id_perangkat: resultset.id_perangkat_desa,
             signature: resultset.signature,
             token: 'auto',
+            fQuery: $(source)
+              .find(
+                `font[type='auto'][name='signature'][fildquery='${$(
+                  $(autoGet[i]),
+                ).attr('fildquery')}']`,
+              )
+              .text(),
+            status: false,
           })
           source =
             $(source)
@@ -253,14 +272,20 @@ export const buildSignature = (code, data, response) => {
                   $(autoGet[i]),
                 ).attr('fildquery')}']`,
               )
-              .text(resultset.penduduk.nama_lengkap ?? '')
+              .html(
+                `<span style='display: inline-block;text-align: left;'>${
+                  resultset.penduduk.nama_lengkap
+                }<br/>${
+                  !empty(resultset.nip) ? 'NIP:' + resultset.nip : ''
+                }</span>` ?? '',
+              )
               .css({
                 'background-color': 'transparent',
                 color: 'black',
               })
               .append(
                 `<font>
-              <input style="position: absolute; margin-top:20px" name='signature-swiching' checked="true" data-id="${$(
+              <input style="position: absolute; margin-top:40px; " name='signature-swiching'  data-id="${$(
                 $(autoGet[i]),
               ).attr('fildquery')}" id='${
                   resultset.id_perangkat_desa
@@ -275,10 +300,9 @@ export const buildSignature = (code, data, response) => {
                   $(autoGet[i]),
                 ).attr('fildquery')}']`,
               )
-              .attr(
-                'src',
-                `${main_url_public}user/signature/${resultset.signature}`,
-              ).prevObject[0]?.outerHTML ?? source
+              .css('opacity', '0')
+              .attr('src', `${resultset.url_signature}`).prevObject[0]
+              ?.outerHTML ?? source
         }
       }
     }

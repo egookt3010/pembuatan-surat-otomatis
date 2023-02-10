@@ -230,7 +230,7 @@ export default function UpdateSurat(props) {
             form_data.append('no_surat', noSurat ?? '')
             form_data.append('perangkat', JSON.stringify(dataPerangkat))
             form_data.append('config', JSON.stringify(configPrint))
-            form_data.append('input', JSON.stringify(SetValValue))
+            form_data.append('form_entry', JSON.stringify(SetValValue))
             if (lampiran.length > 0) {
               lampiran.map((_o, i) => {
                 var input = document.getElementById(`${_o.name}`)

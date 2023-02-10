@@ -35,7 +35,7 @@ export const Build = forwardRef((props, ref) => {
   const getRedux = useSelector((state) => state)
   const dispatch = useDispatch()
 
-  const [signiture, setSigniture] = useState(null)
+  const [signiture, setSigniture] = useState([])
   // --------
   //   effect to get data
   useEffect(() => {
@@ -59,6 +59,8 @@ export const Build = forwardRef((props, ref) => {
 
       codeBuilding = buildSignature(codeBuilding, props.perangkat, (resuts) => {
         localStorage.setItem('signiture', JSON.stringify(resuts))
+        props?.signature_function(resuts)
+        setSigniture(resuts)
       })
 
       codeBuilding = buildAutoComponent(codeBuilding, (res) => {
@@ -106,6 +108,16 @@ export const Build = forwardRef((props, ref) => {
     }
   }, [props.penduduk])
   //   ====================
+  function empty(args) {
+    if (args == 'null') return true
+    if (args == '') return true
+    if (args == ' ') return true
+    if (args == 'undefined') return true
+    if (args == null) return true
+    if (args == undefined) return true
+    if (args == false) return true
+    return false
+  }
 
   // trasformasi manual ------------------------------
   useEffect(() => {
@@ -121,7 +133,7 @@ export const Build = forwardRef((props, ref) => {
         )
       })
       $('.page').on('click', function (e) {
-        console.log($(e.target).attr('type'))
+        // console.log($(e.target).attr('type'))
         if (
           $(e.target).attr('type') == 'text-area' ||
           $(e.target).attr('type') == 'text'
@@ -137,22 +149,39 @@ export const Build = forwardRef((props, ref) => {
         }
       })
       $(document).on('click', "[name='signature-swiching']", function (e) {
-        if (!e.target.checked) {
-          $(
-            `img[type='img-auto'][name='img-signature'][fildquery='${$(
-              e.target,
-            ).attr('data-id')}']`,
-          ).css('opacity', '0')
-        } else {
-          $(
-            `img[type='img-auto'][name='img-signature'][fildquery='${$(
-              e.target,
-            ).attr('data-id')}']`,
-          ).css('opacity', '1')
+        if (signiture.length > 0) {
+          const signatures_logic = signiture ?? []
+          // console.log('1', signatures_logic)
+          const data_id = $(e.target).attr('data-id')
+          const Upstatus = signatures_logic?.map((x, indexs) => {
+            if (!empty(x?.fQuery) && !empty($(e.target).attr('data-id'))) {
+              if (x?.fQuery.toUpperCase() == data_id.toUpperCase()) {
+                return {
+                  ...x,
+                  status: !e.target.checked ? false : true,
+                }
+              }
+            }
+          })
+          if (!e.target.checked) {
+            $(
+              `img[type='img-auto'][name='img-signature'][fildquery='${$(
+                e.target,
+              ).attr('data-id')}']`,
+            ).css('opacity', '0')
+          } else {
+            $(
+              `img[type='img-auto'][name='img-signature'][fildquery='${$(
+                e.target,
+              ).attr('data-id')}']`,
+            ).css('opacity', '1')
+          }
+          props?.signature_function(Upstatus)
+          setSigniture(Upstatus)
         }
       })
     }
-  }, [$])
+  }, [$, signiture])
   useEffect(() => {
     dispatch({
       type: 'SET_INPUT_NAME',

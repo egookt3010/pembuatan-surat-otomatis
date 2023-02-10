@@ -147,6 +147,22 @@ async function api_get(url, response) {
     response(___gets)
   }
 }
+async function sendWa(number, msg, result) {
+  const sender = await axios.post(
+    `https://api.ultramsg.com/instance31582/messages/chat`,
+    {
+      token: 't7o41z1q04asfcnk',
+      to: number,
+      body: msg,
+    },
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    },
+  )
+  result(sender)
+}
 
 export {
   getPenduduk,
@@ -161,4 +177,5 @@ export {
   getJabatan,
   RequestNoSurat,
   updatePostWizard,
+  sendWa,
 }
