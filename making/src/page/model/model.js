@@ -4,34 +4,34 @@ import {
   url_base,
   url_api_server,
   url_server_api,
-} from '../config/config'
-import axios from 'axios'
-import moment from 'moment'
-import { penduduk, perangkat } from '../config/dummy'
+} from '../config/config';
+import axios from 'axios';
+import moment from 'moment';
+import { penduduk, perangkat } from '../config/dummy';
 
 const getpapper = async (cari, respose) => {
   const getSurat = await axios
     .get(`${url_api_server}wizard/getPapper/${cari}`)
     .catch((err) => {
-      console.log(err)
-    })
-  respose(getSurat)
-}
+      console.log(err);
+    });
+  respose(getSurat);
+};
 const getSearchPenduduk = (searching, respose) => {
-  api_get(`${url_api_server}wizard/getPenduduk/${searching}`, respose)
-}
+  api_get(`${url_api_server}wizard/getPenduduk/${searching}`, respose);
+};
 
 const getPenduduk = (respose) => {
-  api_get(`${url_api_server}wizard/getPenduduk`, respose)
-}
+  api_get(`${url_api_server}wizard/getPenduduk`, respose);
+};
 
 const getJabatan = (respose) => {
-  api_get(`${url_api_server}surat/jabatan`, respose)
-}
+  api_get(`${url_api_server}surat/jabatan`, respose);
+};
 
 const getPendudukByDesa = async (respose) => {
-  respose(penduduk)
-}
+  respose(penduduk);
+};
 const getDataPerangkat = async (response) => {
   const _gets = await axios
     .get(`${url_api_server}perangkat/getPerangkatDesa`, {
@@ -40,12 +40,12 @@ const getDataPerangkat = async (response) => {
       },
     })
     .catch((err) => {
-      response(err.respose)
-    })
+      response(err.respose);
+    });
   if (_gets) {
-    response(_gets?.data)
+    response(_gets?.data);
   }
-}
+};
 
 const getKopSurat = async (response) => {
   const _gets = await axios
@@ -55,37 +55,34 @@ const getKopSurat = async (response) => {
       },
     })
     .catch((err) => {
-      response(err.respose)
-    })
+      response(err.respose);
+    });
   if (_gets) {
-    response(_gets?.data)
+    response(_gets?.data);
   }
-}
+};
 
 const postWizard = (data, respose) => {
-  api_post(`${url_api_server}surat/create`, data, respose)
-}
+  api_post(`${url_api_server}surat/create`, data, respose);
+};
 
 const updatePostWizard = (id, data, respose) => {
-  api_post(`${url_api_server}surat/update/${id}`, data, respose)
-}
+  api_post(`${url_api_server}surat/update/${id}`, data, respose);
+};
 
 async function api_post(url, data, response, error) {
-  try {
-    const res = await axios
-      .post(url, data, {
-        headers: {
-          Authorization: 'Bearer ' + sessionStorage.getItem('_token'),
-        },
-      })
-      .catch((err) => {
-        error(err)
-      })
-    response(res.data)
-    // console.log(sessionStorage.getItem("_token"));
-  } catch (errors) {
-    error(errors)
-  }
+  // try {
+  const res = await axios
+    .post(url, data, {
+      headers: {
+        Authorization: 'Bearer ' + sessionStorage.getItem('_token'),
+      },
+    })
+    .catch((err) => {
+      error(err);
+    });
+  response(res.data);
+  // console.log(sessionStorage.getItem("_token"));
 }
 
 const getDataDesa = async (response) => {
@@ -96,12 +93,12 @@ const getDataDesa = async (response) => {
       },
     })
     .catch((err) => {
-      response(err.respose)
-    })
+      response(err.respose);
+    });
   if (__gets) {
-    response(__gets?.data)
+    response(__gets?.data);
   }
-}
+};
 
 const getNoSurat = async (response) => {
   const __gets = await axios
@@ -111,12 +108,12 @@ const getNoSurat = async (response) => {
       },
     })
     .catch((err) => {
-      response(err.respose)
-    })
+      response(err.respose);
+    });
   if (__gets) {
-    response(__gets?.data)
+    response(__gets?.data);
   }
-}
+};
 
 const RequestNoSurat = async (req, res) => {
   const __gets = await axios
@@ -126,12 +123,12 @@ const RequestNoSurat = async (req, res) => {
       },
     })
     .catch((err) => {
-      res(err.respose)
-    })
+      res(err.respose);
+    });
   if (__gets) {
-    res(__gets?.data)
+    res(__gets?.data);
   }
-}
+};
 
 async function api_get(url, response) {
   const ___gets = await axios
@@ -141,28 +138,47 @@ async function api_get(url, response) {
       },
     })
     .catch((err) => {
-      response(err.respose)
-    })
+      response(err.respose);
+    });
   if (___gets.status != undefined) {
-    response(___gets)
+    response(___gets);
   }
 }
-async function sendWa(number, msg, result) {
-  const sender = await axios.post(
-    `https://api.ultramsg.com/instance31582/messages/chat`,
-    {
-      token: 't7o41z1q04asfcnk',
-      to: number,
-      body: msg,
-    },
-    {
+async function senderWa(msg, noTelp, response, error) {
+  const form_data = new FormData();
+  form_data.append('sessions', 'session_1');
+  form_data.append('target', noTelp);
+  form_data.append('message', msg);
+  const send = await axios
+    .post(`https://wa.kaptencode.com/api/sendtext`, form_data, {
       headers: {
         'Content-Type': 'application/json',
+        Authorization: '821824446b294f4eaf571e1941c529b2',
       },
-    },
-  )
-  result(sender)
+    })
+    .catch((err) => error(true));
+  if (send) {
+    response(send);
+    error(false);
+  }
 }
+// !OFF
+// async function sendWa(number, msg, result) {
+//   const sender = await axios.post(
+//     `https://api.ultramsg.com/instance31582/messages/chat`,
+//     {
+//       token: 't7o41z1q04asfcnk',
+//       to: number,
+//       body: msg,
+//     },
+//     {
+//       headers: {
+//         'Content-Type': 'application/json',
+//       },
+//     },
+//   )
+//   result(sender)
+// }
 
 export {
   getPenduduk,
@@ -177,5 +193,5 @@ export {
   getJabatan,
   RequestNoSurat,
   updatePostWizard,
-  sendWa,
-}
+  senderWa,
+};

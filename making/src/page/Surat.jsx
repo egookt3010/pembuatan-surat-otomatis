@@ -1,41 +1,23 @@
-import React, { useRef, useEffect, useState } from 'react'
-import './style/style.scss'
-import { useReactToPrint } from 'react-to-print'
-import { ComponentToPrint } from './ComponentToPrint'
-import $ from 'jquery'
+import React, { useRef, useEffect, useState } from 'react';
+import './style/style.scss';
+import $ from 'jquery';
+import { FaArrowCircleLeft, FaPrint, FaEdit, FaCopy } from 'react-icons/fa';
 
-import { getPapperRequest } from '../System/Model/model_api'
-import styled from 'styled-components'
-import {
-  FaSpinner,
-  FaArrowCircleLeft,
-  FaPrint,
-  FaCog,
-  FaEdit,
-} from 'react-icons/fa'
-
-import { Build } from './Build'
-import Modal from 'react-responsive-modal'
-import axios from 'axios'
-import { postWizard } from './model/model'
+import { Build } from './Build';
+import { postWizard } from './model/model';
 // redux
-import { useSelector } from 'react-redux'
-import { useDispatch } from 'react-redux'
-
-// test
-import { pendudukDummy, Perangkat } from '../System/data/dummy'
-
-import domtoimage from 'dom-to-image'
-import swal from 'sweetalert'
-
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import swal from 'sweetalert';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 // ///////////////////////////////////
-import Logo from './config/Logo'
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
-import 'react-tabs/style/react-tabs.css'
-import Select from 'react-select'
+import Logo from './config/Logo';
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
+import Select from 'react-select';
+
 import {
-  getPendudukByDesa,
-  getpapper,
   getSearchPenduduk,
   getDataPerangkat,
   getKopSurat,
@@ -44,99 +26,100 @@ import {
   getNoSurat,
   getJabatan,
   RequestNoSurat,
-  sendWa,
-} from './model/model'
-import { url_printing } from './config/config'
-import { CheckKopSurat, CheckNoSurat } from './function/main__func'
-import Editor from './components/CkEditor'
-import PengaturanPrint from './components/PengaturanPrint'
+  senderWa,
+} from './model/model';
+import { url_printing } from './config/config';
+import { CheckKopSurat, CheckNoSurat } from './function/main__func';
+import Editor from './components/CkEditor';
+import PengaturanPrint from './components/PengaturanPrint';
 
 export default function Surat(props) {
-  const [data, setData] = useState(null)
-  const [penduduk, setpenduduk] = useState({})
-  const [dataPerangkat, setdataPerangkat] = useState([])
-  const [data_desa, setData_desa] = useState({})
-  const [configPrint, setConfigPrint] = useState(null)
-  const componentRef = useRef()
-  const [setterpadding, setSetterpadding] = useState({})
-  const [open, setOpen] = useState(false)
-  const [openConfigs, setOpenConfigs] = useState(false)
-  const [content, setContent] = useState(``)
-  const [data_jabatan, setData_jabatan] = useState([])
+  /**
+   * !STATE
+   *  */
+  const [data, setData] = useState(null);
+  const [penduduk, setpenduduk] = useState({});
+  const [dataPerangkat, setdataPerangkat] = useState([]);
+  const [data_desa, setData_desa] = useState({});
+  const [configPrint, setConfigPrint] = useState(null);
+  const componentRef = useRef();
+  const [setterpadding, setSetterpadding] = useState({});
+  const [content, setContent] = useState(``);
+  const [data_jabatan, setData_jabatan] = useState([]);
+  // ^PENDUDUK
+  const [masterPenduduk, setMasterPenduduk] = useState([]);
+  const [optionDataPenduduk, setOptionDataPenduduk] = useState([]);
+  const [pendudukSelector, setPendudukSelection] = useState({});
+  // ^END PENDUDUK
+  // !||||||||||||||
+  // ^KOP
+  const [statusKop, setStatusKop] = useState(false);
+  const [kopSurat, setKopSurat] = useState([]);
+  const [optKopSurat, setOptKopSurat] = useState([]);
+  const [kopSelected, setKopSelected] = useState(``);
+  const [selectionKop, setSelectionKop] = useState(null);
+  const [defaultValueKop, setDefaultValueKop] = useState(null);
+  // ^END KOP
+  // !||||||||||||||
+  // ^NO SURAT
+  const [checkStatusNoSurat, setCheckStatusNoSurat] = useState(false);
+  const [noSurat, setNosurat] = useState(``);
+  const [defaultValueNoSurat, setDefaultValueNoSurat] = useState([]);
+  const [noSuratValueSelected, setNoSuratValueSelected] = useState(null);
+  // ^END NOSURAT
+  // !||||||||||||||
+  const [statusEdit, setStatusEdit] = useState(false);
+  const [lampiran, setLampiran] = useState([]);
+  const [configure, setConfigure] = useState({});
+  const [dataSurat, setDataSurat] = useState({});
+  const [listNoSurat, setListNoSurat] = useState([]);
+  const [hndelSignatures, setHndelSignatures] = useState([]);
+  const [loadingNext, setLoadingNext] = useState(false);
+  const [sig, setSig] = useState(false);
+  /**
+   * !END STATE
+   */
+  //
+  /**
+   * !REDUX
+   */
+  const getRedux = useSelector((state) => state);
+  const dispatch = useDispatch();
+  /**
+   * !END
+   */
 
-  // new update
-  const [masterPenduduk, setMasterPenduduk] = useState([])
-  const [optionDataPenduduk, setOptionDataPenduduk] = useState([])
-  const [pendudukSelector, setPendudukSelection] = useState({})
-
-  const [statusKop, setStatusKop] = useState(false)
-  const [kopSurat, setKopSurat] = useState([])
-  const [optKopSurat, setOptKopSurat] = useState([])
-  const [kopSelected, setKopSelected] = useState(``)
-  const [checkStatusNoSurat, setCheckStatusNoSurat] = useState(false)
-  const [noSurat, setNosurat] = useState(``)
-  const [statusEdit, setStatusEdit] = useState(false)
-  const [lampiran, setLampiran] = useState([])
-  const [configure, setConfigure] = useState({})
-  const [dataSurat, setDataSurat] = useState({})
-
-  const [dataLampiran, setDataLampiran] = useState([])
-  const [fileLampiran, setFileLampiran] = useState([])
-  const [listNoSurat, setListNoSurat] = useState([])
-
-  const [hndelSignatures, setHndelSignatures] = useState([])
-
-  // ////////////////////////////////////////////////////////////
-  // useEffect(() => {
-  //   if (props.open) {
-  //     setOpen(props.open);
-  //   }
-  // }, [props.open]);
-  const [loadingNext, setLoadingNext] = useState(false)
-
-  const getRedux = useSelector((state) => state)
-  const dispatch = useDispatch()
-
-  const onOpenModal = () => setOpen(true)
-  const onCloseModal = () => setOpen(false)
-
-  const handlePrint = useReactToPrint({
-    content: () => componentRef.current,
-  })
-  // useEffect(() => {
-  //   if (
-  //     props.globalData != undefined &&
-  //     Object?.keys(props?.globalData ?? {}).length > 0
-  //   ) {
-  //     setData(props.code);
-  //     setConfigPrint(getRedux.papperSetting);
-  //     setpenduduk(props?.dataPenduduk ?? {});
-  //     setdataPerangkat(props?.dataPerangkat ?? []);
-  //   }
-  // }, [props.globalData, props.dataPenduduk]);
-
-  const hndelReplacePenduduk = (penduduk) => {
-    setpenduduk(penduduk ?? {})
+  function isEmpty(args) {
+    if (args == 'null') return true;
+    if (args == '') return true;
+    if (args == ' ') return true;
+    if (args == 'undefined') return true;
+    if (args == null) return true;
+    if (args == undefined) return true;
+    if (args == false) return true;
+    return false;
   }
 
+  /*
+   ~INISIAL ELEMENTS ----------------------------------------------------
+   */
   useEffect(() => {
     if (sessionStorage.getItem('_surat') != undefined) {
       const surat =
-        JSON?.parse(sessionStorage.getItem('_surat') ?? '{}') ?? '{}'
-
-      setDataSurat(surat)
-      setData(surat?.code ?? '')
-      setConfigPrint(JSON.parse(surat?.config_print ?? '{}'))
-      func__statusKop(surat?.code ?? '')
-      func__checkStatusNoSurat(surat?.code ?? '')
-      setLampiran(JSON.parse(surat?.attachment ?? '[]'))
-      setConfigure(JSON.parse(surat?.config_print ?? '[]'))
-      hndelGetPenduduk()
-      getDataPerangkatDesa()
-      getDesa()
-      getNomorSurat()
-      getDatajabatan()
-      sessionStorage.setItem('PegaturanPrint', surat?.config_print ?? '[]')
+        JSON?.parse(sessionStorage.getItem('_surat') ?? '{}') ?? '{}';
+      setDataSurat(surat);
+      setData(surat?.code ?? '');
+      setConfigPrint(JSON.parse(surat?.config_print ?? '{}'));
+      func__statusKop(surat?.code ?? '');
+      func__checkStatusNoSurat(surat?.code ?? '');
+      setLampiran(JSON.parse(surat?.attachment ?? '[]'));
+      setConfigure(JSON.parse(surat?.config_print ?? '[]'));
+      hndelGetPenduduk();
+      getDataPerangkatDesa();
+      getDesa();
+      getNomorSurat(surat);
+      getDatajabatan();
+      sessionStorage.setItem('PegaturanPrint', surat?.config_print ?? '[]');
       setSetterpadding({
         paddingTop:
           JSON.parse(surat?.config_print ?? '[]')?.paperMargin?.top ?? 0,
@@ -146,280 +129,477 @@ export default function Surat(props) {
           JSON.parse(surat?.config_print ?? '[]')?.paperMargin?.left ?? 0,
         paddingRight:
           JSON.parse(surat?.config_print ?? '[]')?.paperMargin?.right ?? 0,
-      })
+      });
     }
-  }, [])
-
+  }, []);
+  /*
+   ~END INISIAL ELEMENTS ----------------------------------------------------
+   */
+  // *|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+  /*
+   ~AMBIL DATA JABATAN  -----------------------------------------------------
+   */
   const getDatajabatan = () => {
     getJabatan((res) => {
-      setData_jabatan(res?.data?.response ?? [])
-    })
-  }
+      setData_jabatan(res?.data?.response ?? []);
+    });
+  };
+  /*
+   ~END AMBIL DATA JABATAN  -----------------------------------------------------
+   */
+  // *||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
-  const getNomorSurat = () => {
-    getNoSurat((result) => {
-      console.log(result?.response)
-      const dd = []
-      result?.response?.map((x, i) => {
-        dd.push({ value: x?.id, label: x?.title })
-      })
-      setListNoSurat(dd)
-    })
-  }
-
+  /*
+   ~PENGATURAN PRINT ----------------------------------------------------
+   */
   const hndelChangeState = () => {
     if (sessionStorage.getItem('PegaturanPrint') != undefined) {
-      const configPrint = JSON.parse(sessionStorage.getItem('PegaturanPrint'))
-      setConfigPrint(configPrint)
+      const configPrint = JSON.parse(sessionStorage.getItem('PegaturanPrint'));
+      setConfigPrint(configPrint);
       setSetterpadding({
         paddingTop: configPrint?.paperMargin?.top ?? 0,
         paddingBottom: configPrint?.paperMargin?.bottom ?? 0,
         paddingLeft: configPrint?.paperMargin?.left ?? 0,
         paddingRight: configPrint?.paperMargin?.right ?? 0,
-      })
+      });
     }
-  }
-
-  // const hndelGetPenduduk = () => {
-  //   onCloseModal();
-  // };
+  };
+  /*
+   ~END PENGATURAN PRINT 
+   */
+  // *|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+  /*
+   ~HNDEL BACK 
+   */
   const hndelBack = () => {
-    window.history.go(-1)
-    return false
-  }
-
+    window.history.go(-1);
+    return false;
+  };
+  /*
+   ~END BACK
+   */
+  // *|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+  /*
+   ~CETAK SURAT & MENYIMPAN DATA (SAVE)
+   */
   const hndelCetak = () => {
-    // console.log(getRedux);
-    if ($('#frame-letter').find('.inp').length) {
-      $('#frame-letter').find('.inp')[0].focus()
-    } else {
-      // alert warning
+    if (checkStatusNoSurat && isEmpty(noSurat)) {
       swal({
-        title: 'Yakin!',
-        text: 'Setelah anda mencatak surat, surat akan otomatis tersimpan.',
-        icon: 'warning',
+        title: 'Oops!, nomor surat tidak boleh kosong!',
+        text: 'pilih nomor surat dulu!',
+        icon: 'error',
         button: 'OK',
-      }).then((komit) => {
-        if (komit) {
-          $('.containerLoadingFull')
-            .addClass('show-load')
-            .removeClass('hide-load')
+      });
+      return;
+    }
+    // if ($('#frame-letter').find('.inp').length) {
+    //   $('#frame-letter').find('.inp')[0].focus();
+    //   return;
+    // }
 
-          // ====================================================================
-          let mainContent =
+    // ? pesan untuk cetak surat
+    let msgs = ``;
+    if (sig) {
+      msgs = `Surat akan disimpan & menunggu konfirmasi tandatangan pimpinan`;
+    } else {
+      msgs = 'Setelah anda mencatak surat, surat akan otomatis tersimpan.';
+    }
+    // ? end pesan
+    swal({
+      title: 'Yakin!',
+      text: msgs,
+      icon: 'warning',
+      button: 'OK',
+    }).then((komit) => {
+      // ? true
+      if (komit) {
+        /**
+         * ?loading
+         */
+        $('.containerLoadingFull')
+          .addClass('show-load')
+          .removeClass('hide-load');
+        /**
+         * ?end loading
+         */
+        /**
+         * !kontent
+         */
+        let mainContent =
+          $('#frame-letter div')
+            .find(`font[method='dev']`)
+            .css('border', 'none').prevObject[0]?.innerHTML ?? ``;
+        /**
+         * !end kontent
+         */
+
+        //  ?hidden check box
+        mainContent =
+          $(mainContent).find("input[type='checkbox']").hide().prevObject[0]
+            ?.innerHTML ?? ``;
+        // ?end hidden
+
+        // ^Add conten state
+        setContent(mainContent);
+        // ^end Add conten state
+
+        // ?fungsi pada input manual
+        const NameManualInput = JSON.parse(dataSurat?.manual_name ?? '[]');
+        var SetValValue = [];
+        NameManualInput.map((_, i) => {
+          SetValValue.push({
+            name: _,
+            value: $(mainContent)
+              .find('[name=' + _ + ']')
+              .text(),
+          });
+        });
+        // ?end fungsi
+
+        // !REKAP SEMUA DATA
+        if (dataSurat.id_wizard_template) {
+          const form_data = new FormData();
+          form_data.append('id_wizard', dataSurat?.id_wizard_template ?? 0);
+
+          // ^ MENGAMBIL HTML SURAT ===========================================
+          form_data.append(
+            'content',
             $('#frame-letter div')
               .find(`font[method='dev']`)
               .css('border', 'none').prevObject[0]?.innerHTML ?? ``
+          );
+          // ^ END MENGAMBIL HTML SURAT ======================================
 
-          mainContent =
-            $(mainContent).find("input[type='checkbox']").hide().prevObject[0]
-              ?.innerHTML ?? ``
+          form_data.append('code', data);
+          form_data.append('nik', penduduk.nik);
+          form_data.append('penduduk', JSON.stringify(penduduk));
+          form_data.append('no_surat', noSurat ?? '');
+          form_data.append('perangkat', JSON.stringify(dataPerangkat));
+          form_data.append('config', JSON.stringify(configPrint));
+          form_data.append('form_entry', JSON.stringify(SetValValue));
+          form_data.append('signature', JSON.stringify(hndelSignatures));
 
-          setContent(mainContent)
-          // ====================================================================
-          const NameManualInput = JSON.parse(dataSurat?.manual_name ?? '[]')
-          var SetValValue = []
-          NameManualInput.map((_, i) => {
-            SetValValue.push({
-              name: _,
-              value: $(mainContent)
-                .find('[name=' + _ + ']')
-                .text(),
-            })
-          })
-
-          if (dataSurat.id_wizard_template) {
-            const form_data = new FormData()
-            form_data.append('id_wizard', dataSurat?.id_wizard_template ?? 0)
-            form_data.append(
-              'content',
-              $('#frame-letter div')
-                .find(`font[method='dev']`)
-                .css('border', 'none').prevObject[0]?.innerHTML ?? ``,
-            )
-            form_data.append('code', data)
-            form_data.append('nik', penduduk.nik)
-            form_data.append('penduduk', JSON.stringify(penduduk))
-            form_data.append('no_surat', noSurat ?? '')
-            form_data.append('perangkat', JSON.stringify(dataPerangkat))
-            form_data.append('config', JSON.stringify(configPrint))
-            form_data.append('form_entry', JSON.stringify(SetValValue))
-            form_data.append('signature', JSON.stringify(hndelSignatures))
-            if (lampiran.length > 0) {
-              lampiran.map((_o, i) => {
-                var input = document.getElementById(`${_o.name}`)
-                form_data.append(`${_o.name}`, input.files[0])
-              })
-              form_data.append('data_lampiran', JSON.stringify(lampiran))
-            }
-            postWizard(
-              form_data,
-              (res) => {
-                console.log('LL', res)
-                if (res?.status == true) {
-                  if (res?.token_signature.length > 0) {
-                    res?.token_signature?.map((x) => {
-                      sendWa(
-                        x?.perangkat?.no_telp,
-                        `sebuah surat dengan nama ${x?.surat?.wizard?.name} dari ${x?.surat?.penduduk?.nama_lengkap} meminta validasi tanda tangan anda, lihat surat. https://v3.gigades.id/Surat?acc=${x?.uid}`,
-                        (results) => {
-                          console.log(results)
-                        },
-                      )
-                    })
-                  }
-                }
-                const TimePrint = setInterval(() => {
-                  $('.containerLoadingFull')
-                    .addClass('hide-load')
-                    .removeClass('show-load')
-                  // handlePrint();
-                  window.open(url_printing + res?.data?.id_surat)
-                  clearInterval(TimePrint)
-                }, 1000)
-              },
-              (err) => {
-                swal({
-                  title: 'Oops!',
-                  text:
-                    'Kesalahan saat membuat surat, Silahkan ulangi. jika masin gagal coba reload.',
-                  icon: 'error',
-                  button: 'OK',
-                })
-              },
-            )
+          //  ^LAMPIRAN ===================================================
+          if (lampiran.length > 0) {
+            lampiran.map((_o, i) => {
+              var input = document.getElementById(`${_o.name}`);
+              form_data.append(`${_o.name}`, input.files[0]);
+            });
+            form_data.append('data_lampiran', JSON.stringify(lampiran));
           }
-        } else {
-          $('.containerLoadingFull')
-            .addClass('hide-load')
-            .removeClass('show-load')
-        }
-      })
-    }
-  }
+          // ^END LAMPIRAN ===============================================
 
+          postWizard(
+            form_data,
+            (res) => {
+              if (res?.status == true) {
+                //  !FUNGSI SENDING WHASTAPP =================================================================
+                if (res?.token_signature.length > 0) {
+                  res?.token_signature?.map((x) => {
+                    if (typeof notifSuratTandaTangan === 'function') {
+                      notifSuratTandaTangan(res);
+                    } else {
+                      senderWa(
+                        `sebuah surat dengan nama ${x?.surat?.wizard?.name} dari ${x?.surat?.penduduk?.nama_lengkap} meminta validasi tanda tangan anda, lihat surat. https://v3.gigades.id/Surat?acc=${x?.uid}`,
+                        x?.perangkat?.no_telp,
+                        (results) => {
+                          toast.success(
+                            `permohonan tandatangan terkirim, untuk memastikan anda dapat menghubungi ${x?.perangkat?.no_telp}`,
+                            // `permohonan tandatangan terkirim, jika pimpinan tidak mendapatkan pesan, silahkan kirim link berikut,  https://v3.gigades.id/Surat?acc=${x?.uid}`,
+                            {
+                              position: toast.POSITION.BOTTOM_LEFT,
+                              autoClose: 10000,
+                            }
+                          );
+                        },
+                        (err) => {
+                          if (err) {
+                            toast.error(
+                              `sepertinya ada kesalahan,untuk memastikan anda dapat menghubungi ${x?.perangkat?.no_telp}`,
+                              {
+                                position: toast.POSITION.BOTTOM_LEFT,
+                                autoClose: 10000,
+                              }
+                            );
+                          }
+                        }
+                      );
+                    }
+                  });
+                }
+              }
+              // !END FUNGSI SENDING WAHSTAPP ================================================================
+              // & TUNGGU PROSES
+              const TimePrint = setInterval(() => {
+                $('.containerLoadingFull')
+                  .addClass('hide-load')
+                  .removeClass('show-load');
+                // handlePrint();
+                window.open(url_printing + res?.data?.id_surat);
+                clearInterval(TimePrint);
+              }, 1000);
+              // & END TUNGGU PROSES
+            },
+            (err) => {
+              // ! ERROR PROSES
+              swal({
+                title: 'Oops!',
+                text: 'Kesalahan saat membuat surat, Silahkan ulangi. jika masin gagal coba reload.',
+                icon: 'error',
+                button: 'OK',
+              });
+              // !END ERROR PROSES
+            }
+          );
+        }
+      } else {
+        $('.containerLoadingFull')
+          .addClass('hide-load')
+          .removeClass('show-load');
+      }
+    });
+  };
+  /*
+   ~END CETAK SURAT & MENYIMPAN DATA (SAVE)
+   */
+  // *|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+  /*
+   ~ AMBIL DATA PENDUDUK
+   */
   const hndelGetPenduduk = (ev) => {
     getPenduduk((result) => {
       if (result?.status ?? 400 == 200) {
-        setMasterPenduduk(result.data)
-        const opt = []
+        setMasterPenduduk(result.data);
+        const opt = [];
         result.data.map((_, i) => {
-          opt.push({ value: _.nik, label: _.nama_lengkap })
-        })
-
-        setOptionDataPenduduk(opt)
+          opt.push({ value: _.nik, label: _.nama_lengkap });
+        });
+        setOptionDataPenduduk(opt);
       }
-    })
-  }
+    });
+  };
+  /*
+   ~END AMBIL DATA PENDUDUK
+   */
+  // *|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+  /*
+   ~ CEK STATUS KOP SURAT
+   */
+
   const func__statusKop = (code) => {
     CheckKopSurat(`<div>${code}</div>`, (res, kop) => {
-      setStatusKop(res)
+      setStatusKop(res);
       if (res) {
         getKopSurat((result) => {
           if (result.length > 0) {
-            setKopSurat(result)
+            setKopSurat(result);
 
-            const opt = []
+            const opt = [];
             result?.map((_, i) => {
               opt.push({
                 data: _?.code ?? '',
                 value: _.id_kop_surat,
                 label: _.judul_kop,
-              })
-            })
-            setOptKopSurat(opt)
+              });
+            });
+            if (!isEmpty(opt[1])) {
+              setDefaultValueKop(opt[0]);
+              setKopSelected(opt[0].data);
+            }
+            setOptKopSurat(opt);
           }
-        })
+        });
       }
-    })
-  }
-
+    });
+  };
+  /*
+   ~ CHANGE KOP SURAT
+   */
+  const hndelChangeKop = (thisKop) => {
+    setSelectionKop(thisKop);
+    setKopSelected(thisKop.data);
+  };
+  /*
+   ~END CHANGE KOP SURAT
+   */
+  /*
+   ~END CEK STATUS KOP SURAT
+   */
+  // *|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+  /*
+   ~ SELECT PENDUDUK
+   */
   const hndelPendudukChange = (thisOpt) => {
     getSearchPenduduk(thisOpt.value, (result) => {
       if (result?.status ?? 400 == 200) {
-        setpenduduk(result.data[0])
+        setpenduduk(result.data[0]);
       }
-    })
-  }
+    });
+  };
+  /*
+   ~END SELECT PENDUDUK
+   */
+  // *|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+  /*
+   ~ AMBIL DATA PERANGKAT DESA
+   */
   const getDataPerangkatDesa = () => {
     getDataPerangkat((result) => {
-      setdataPerangkat(result?.response ?? [])
-    })
-  }
-
-  const hndelChangeKop = (thisKop) => {
-    setKopSelected(thisKop.data)
-  }
-
-  const func__checkStatusNoSurat = (code) => {
-    CheckNoSurat(`<div>${code}</div>`, (res) => {
-      setCheckStatusNoSurat(res)
-    })
-  }
-  // const hndelNoSurat = (thisNo) => {
-  //   setNosurat(thisNo.target.value);
-  // };
+      setdataPerangkat(result?.response ?? []);
+    });
+  };
+  /*
+   ~END  DATA PERANGKAT DESA
+   */
+  // *|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+  /*
+   ~ AMBIL DATA DESA
+   */
   const getDesa = () => {
     getDataDesa((result) => {
-      setData_desa(result ?? {})
-    })
-  }
+      setData_desa(result ?? {});
+    });
+  };
+  /*
+   ~END AMBIL DATA DESA
+   */
+  // *|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+  /*
+  ^ PENOMORAN SURAT
+  */
+  /*
+   ~ CEK NOMOR SURAT
+   */
+  const hndelNoSurat = (thisNo) => {
+    setNosurat(thisNo.target.value);
+  };
+  // *|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
+  const http_request_nomor_surat = (body) => {
+    RequestNoSurat(body, (result) => {
+      setNosurat(result);
+    });
+  };
+  /*
+   ~AMBIL DATA NOMOR SURAT ------------------------------------------------------
+   */
+  const getNomorSurat = (surat = null) => {
+    getNoSurat((result) => {
+      const dd = [];
+      result?.response?.map((x, i) => {
+        dd.push({ value: x?.id, label: x?.title });
+      });
+      setListNoSurat(dd);
+      if (!isEmpty(dd[1])) {
+        setDefaultValueNoSurat(dd[1]);
+        const form_data = new FormData();
+        form_data.append('idNoSurat', dd[1].value);
+        form_data.append('id_wizard_template', surat?.id_wizard_template);
+        http_request_nomor_surat(form_data);
+      }
+    });
+  };
+  /*
+   ~END AMBIL DATA NOMOR SURAT  -----------------------------------------------------
+   */
+  // *|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
   const funcSelectedNoSurat = (e) => {
-    const form_data = new FormData()
-    form_data.append('idNoSurat', e.value)
-    form_data.append('id_wizard_template', dataSurat?.id_wizard_template)
-    RequestNoSurat(form_data, (result) => {
-      setNosurat(result)
-    })
-  }
+    setNoSuratValueSelected(e);
+    const form_data = new FormData();
+    form_data.append('idNoSurat', e.value);
+    form_data.append('id_wizard_template', dataSurat?.id_wizard_template);
+    http_request_nomor_surat(form_data);
+  };
+  /*
+   ~ CEK NOMOR SURAT PADA TEMPLATE
+   */
+  const func__checkStatusNoSurat = (code) => {
+    CheckNoSurat(`<div>${code}</div>`, (res) => {
+      setCheckStatusNoSurat(res);
+    });
+  };
+  /*
+   ~END
+   */
+  // *|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+  /*
+   ~ FUNGSI TANDA TANGAN
+   */
   const signature_function = (args) => {
-    setHndelSignatures(args)
-  }
+    if (args.length > 0) {
+      let status = args.filter((obj) => obj.status == true);
+      if (status.length > 0) {
+        setSig(true);
+      } else {
+        setSig(false);
+      }
+    }
+    setHndelSignatures(args);
+  };
+  /*
+   ~END  FUNGSI TANDA TANGAN
+   */
+  // *==============================================================================================
+  // !==============================================================================================
+  // *==============================================================================================
+  // & RETURN
   return (
-    <div id="printing-root">
+    <div id='printing-root'>
+      <ToastContainer />
       {statusEdit ? (
         <Editor
           code={data}
           callback={(code) => {
-            setData(code)
+            setData(code);
           }}
           back={() => {
-            setStatusEdit(false)
+            setStatusEdit(false);
           }}
         />
       ) : (
         <>
-          <div id="main-content">
-            <div className="top-bar">
-              <div className="top-menu-printing">
-                <button className="btn-back-printing" onClick={hndelBack}>
-                  <FaArrowCircleLeft size={16} />
-                </button>
+          <div id='main-content'>
+            <div className='top-bar'>
+              <div className='top-menu-printing'>
+                <div>
+                  <button className='btn-back-printing' onClick={hndelBack}>
+                    <FaArrowCircleLeft size={16} />
+                  </button>
+                  <strong style={{ marginLeft: '10px' }}>
+                    <label htmlFor=''>{data_desa?.nama_desa ?? ''}</label>
+                  </strong>
+                </div>
                 <div style={{ display: 'flex' }}>
                   <button
-                    className="btn-printing bg-success"
+                    className='btn-printing bg-success'
+                    style={{ background: '#27bd10', color: '#fff' }}
                     onClick={() => {
-                      setStatusEdit(!statusEdit)
-                    }}
-                  >
-                    <FaEdit size={16} /> EDIT
+                      setStatusEdit(!statusEdit);
+                    }}>
+                    <FaEdit size={16} /> edit
                   </button>
 
                   {!props.printObj && (
                     <button
-                      className="btn-printing bg-secondary"
-                      style={{ marginLeft: '10px' }}
-                      onClick={hndelCetak}
-                    >
-                      <FaPrint size={16} /> PRINT
+                      className='btn-printing bg-secondary'
+                      style={{
+                        marginLeft: '10px',
+                        display: 'flex',
+                        justifyContent: 'space-evenly',
+                        background: '#333',
+                        color: '#fff',
+                      }}
+                      onClick={hndelCetak}>
+                      <FaPrint size={16} />
+                      <span style={{ marginLeft: '3px' }}>
+                        {sig ? ' simpan' : ' print'}
+                      </span>
                     </button>
                   )}
                   <div
                     style={{
                       width: '380px',
-                    }}
-                  ></div>
+                    }}></div>
                 </div>
               </div>
             </div>
@@ -436,49 +616,37 @@ export default function Surat(props) {
               jabatan={data_jabatan ?? []}
               signature_function={signature_function}
             />
-            {/* <div
-              className='page'
-              style={setterpadding}
-              data-size={configPrint != null && configPrint.paperSize}
-              data-layout={configPrint != null && configPrint.paperOrientation}>
-              <Build
-                layout={configPrint}
-                padding={setterpadding}
-                ref={componentRef}
-                code={data ?? null}
-                penduduk={penduduk}
-                perangkat={dataPerangkat}
-                kop={kopSelected ?? ''}
-                nosurat={noSurat ?? ''}
-                dataDesa={data_desa ?? {}}
-              />
-            </div> */}
           </div>
-          <div id="aside">
-            <div className="header-logo">
+          <div id='aside'>
+            <div className='header-logo'>
               <Logo />
             </div>
-            <div className="content-aside">
+            <div className='content-aside'>
               <Tabs>
                 <TabList>
                   <Tab>DATA</Tab>
                   <Tab>LAMPIRAN</Tab>
-                  <Tab>PENGATURAN</Tab>
+                  {/* <Tab>PENGATURAN</Tab> */}
                 </TabList>
 
                 <TabPanel>
-                  <div className="content-aside-card">
-                    <div className="form-group">
-                      <label htmlFor="">Nama Request Surat</label>
+                  <div className='content-aside-card'>
+                    <div className='form-group'>
+                      <label htmlFor=''>CARI NAMA PEMOPHON</label>
                       <Select
                         options={optionDataPenduduk}
                         onChange={hndelPendudukChange}
                       />
                     </div>
                     {statusKop && (
-                      <div className="form-group">
-                        <label htmlFor="">Kop Surat</label>
+                      <div className='form-group'>
+                        <label htmlFor=''>PILIH KOP SURAT</label>
                         <Select
+                          value={
+                            selectionKop == null
+                              ? defaultValueKop
+                              : selectionKop
+                          }
                           options={optKopSurat}
                           onChange={hndelChangeKop}
                         />
@@ -486,64 +654,63 @@ export default function Surat(props) {
                     )}
                     {checkStatusNoSurat && (
                       <>
-                        <div className="form-group">
-                          <label htmlFor="">Format No Surat</label>
+                        <div className='form-group'>
+                          <label htmlFor=''>PILIH FORMAT NOMOR SURAT</label>
                           <Select
+                            value={
+                              noSuratValueSelected == null
+                                ? defaultValueNoSurat
+                                : noSuratValueSelected
+                            }
                             options={listNoSurat}
                             onChange={funcSelectedNoSurat}
                           />
                         </div>
-                        {/* <div className='form-group'>
-                          <label htmlFor=''>Nomor Surat</label>
+                        <div className='form-group'>
+                          <label htmlFor=''>NOMOR SURAT</label>
+                          <small
+                            style={{
+                              color: 'green',
+                              borderLeft: '2px sold green',
+                            }}>
+                            edit no surat jika tidak sesuai
+                          </small>
                           <input
                             type='text'
+                            value={noSurat}
+                            onChange={hndelNoSurat}
                             className='input-text'
-                            onKeyUp={hndelNoSurat}
                           />
-                        </div> */}
+                        </div>
                       </>
                     )}
                   </div>
                 </TabPanel>
                 <TabPanel>
                   <div
-                    className="widget-cards widget-lampiran w-100"
-                    style={{ marginTop: '15px' }}
-                  >
+                    className='widget-cards widget-lampiran w-100'
+                    style={{ marginTop: '15px' }}>
                     {lampiran.map((item, index) => (
                       <div
-                        className="form-group mb-1"
+                        className='form-group mb-1'
                         style={{
                           width: '100%',
-                        }}
-                      >
+                        }}>
                         <label
-                          htmlFor=""
-                          className="labels text-ubuntu-regular text-light"
-                          style={{ fontSize: '2vh' }}
-                        >
+                          htmlFor=''
+                          className='labels text-ubuntu-regular text-light'
+                          style={{ fontSize: '2vh' }}>
                           {item.value}
                         </label>
-                        <div className="text-left msg-inp"></div>
+                        <div className='text-left msg-inp'></div>
                         <input
-                          type="file"
-                          className="input-text shadow-sm text-ubuntu"
+                          type='file'
+                          className='input-text shadow-sm text-ubuntu'
                           required={item.required}
-                          data-type="attachment"
+                          data-type='attachment'
                           name={item.name}
                           id={item.name}
-                          // onChange={(e) => {
-                          //   const f = e.target.files[0];
-                          //   setFileLampiran([...fileLampiran, f]);
-                          //   setDataLampiran([
-                          //     ...dataLampiran,
-                          //     {
-                          //       ...item,
-                          //       file: f.name,
-                          //     },
-                          //   ]);
-                          // }}
-                          placeholder="lebel atribut"
+                          placeholder='lebel atribut'
                         />
                       </div>
                     ))}
@@ -562,20 +729,6 @@ export default function Surat(props) {
           </div>
         </>
       )}
-      {/* <div style={{ display: 'none' }}>
-        <ComponentToPrint
-          ref={componentRef}
-          content={content}
-          paperSize={configPrint?.paperSize ?? {}}
-          orientasi={configPrint?.paperOrientation ?? {}}
-          margin={{
-            top: configPrint?.paperMargin?.top ?? 0,
-            bottom: configPrint?.paperMargin?.bottom ?? 0,
-            left: configPrint?.paperMargin?.left ?? 0,
-            right: configPrint?.paperMargin?.right ?? 0,
-          }}
-        />
-      </div> */}
     </div>
-  )
+  );
 }
