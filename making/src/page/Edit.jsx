@@ -459,6 +459,8 @@ export default function UpdateSurat(props) {
               kop={kopSelected ?? ''}
               nosurat={noSurat ?? ''}
               dataDesa={data_desa ?? {}}
+              jabatan={data_jabatan ?? []}
+              signature_function={signature_function}
             />
           </div>
           <div id='aside'>
