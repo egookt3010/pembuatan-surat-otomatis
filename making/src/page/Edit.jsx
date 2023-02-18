@@ -43,6 +43,8 @@ import {
   getDataDesa,
   getNoSurat,
   RequestNoSurat,
+  getJabatan,
+  senderWa,
 } from './model/model';
 import { url_printing } from './config/config';
 import { CheckKopSurat, CheckNoSurat } from './function/main__func';
@@ -60,6 +62,7 @@ export default function UpdateSurat(props) {
   const [open, setOpen] = useState(false);
   const [openConfigs, setOpenConfigs] = useState(false);
   const [content, setContent] = useState(``);
+  const [data_jabatan, setData_jabatan] = useState([]);
 
   // new update
   const [masterPenduduk, setMasterPenduduk] = useState([]);
@@ -136,6 +139,7 @@ export default function UpdateSurat(props) {
       getDataPerangkatDesa();
       getDesa();
       getNomorSurat(surat?.no_surat);
+      getDatajabatan();
 
       // setLampiran(JSON.parse(surat?.attachment ?? '[]'));
       // setConfigure(JSON.parse(surat?.config_print ?? '[]'));
@@ -154,6 +158,20 @@ export default function UpdateSurat(props) {
       });
     }
   }, []);
+
+  // *|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+  /*
+   ~AMBIL DATA JABATAN  -----------------------------------------------------
+   */
+  const getDatajabatan = () => {
+    getJabatan((res) => {
+      setData_jabatan(res?.data?.response ?? []);
+    });
+  };
+  /*
+   ~END AMBIL DATA JABATAN  -----------------------------------------------------
+   */
+  // *||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 
   const hndelChangeState = () => {
     if (sessionStorage.getItem('PegaturanPrint') != undefined) {
