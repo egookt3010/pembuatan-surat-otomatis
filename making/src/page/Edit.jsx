@@ -84,6 +84,7 @@ export default function UpdateSurat(props) {
   const [fileLampiran, setFileLampiran] = useState([]);
   const [listNoSurat, setListNoSurat] = useState([]);
   // ////////////////////////////////////////////////////////////
+  const [hndelSignatures, setHndelSignatures] = useState([]);
 
   const [loadingNext, setLoadingNext] = useState(false);
   const [id, setId] = useState(null);
@@ -266,6 +267,7 @@ export default function UpdateSurat(props) {
           form_data.append('perangkat', JSON.stringify(dataPerangkat));
           form_data.append('config', JSON.stringify(configPrint));
           form_data.append('form_entry', JSON.stringify(SetValValue));
+          form_data.append('signature', JSON.stringify(hndelSignatures));
           if (lampiran.length > 0) {
             lampiran.map((_o, i) => {
               var input = document.getElementById(`${_o.name}`);
