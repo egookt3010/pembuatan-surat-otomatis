@@ -192,10 +192,10 @@ export default function Surat(props) {
       });
       return;
     }
-    // if ($('#frame-letter').find('.inp').length) {
-    //   $('#frame-letter').find('.inp')[0].focus();
-    //   return;
-    // }
+    if ($('#frame-letter').find('.inp').length) {
+      $('#frame-letter').find('.inp')[0].focus();
+      return;
+    }
 
     // ? pesan untuk cetak surat
     let msgs = ``;
