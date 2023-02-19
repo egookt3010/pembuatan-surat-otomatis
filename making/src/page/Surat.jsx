@@ -370,7 +370,7 @@ export default function Surat(props) {
                   .addClass('hide-load')
                   .removeClass('show-load');
                 // handlePrint();
-                window.open(url_printing + results?.data?.id_surat);
+                window.open(url_printing + resultset?.data?.id_surat);
                 clearInterval(TimePrint);
               }, 1000);
               // & END TUNGGU PROSES
@@ -400,7 +400,7 @@ export default function Surat(props) {
                 .addClass('hide-load')
                 .removeClass('show-load');
               // handlePrint();
-              window.open(url_printing + results?.data?.id_surat);
+              window.open(url_printing + resultset?.data?.id_surat);
               clearInterval(TimePrint);
             }, 1000);
           }
@@ -426,7 +426,7 @@ export default function Surat(props) {
                   .addClass('hide-load')
                   .removeClass('show-load');
                 // handlePrint();
-                window.open(url_printing + results?.data?.id_surat);
+                window.open(url_printing + resultset?.data?.id_surat);
                 clearInterval(TimePrint);
               }, 1000);
               // & END TUNGGU PROSES
