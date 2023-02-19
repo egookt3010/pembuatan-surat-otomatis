@@ -335,18 +335,17 @@ export default function Surat(props) {
             notifSignature(res);
           }
           // !END FUNGSI SENDING WAHSTAPP ================================================================
-          else {
-            // & TUNGGU PROSES
-            const TimePrint = setInterval(() => {
-              $('.containerLoadingFull')
-                .addClass('hide-load')
-                .removeClass('show-load');
-              // handlePrint();
-              window.open(url_printing + res?.data?.id_surat);
-              clearInterval(TimePrint);
-            }, 1000);
-            // & END TUNGGU PROSES
-          }
+
+          // & TUNGGU PROSES
+          const TimePrint = setInterval(() => {
+            $('.containerLoadingFull')
+              .addClass('hide-load')
+              .removeClass('show-load');
+            // handlePrint();
+            window.open(url_printing + res?.data?.id_surat);
+            clearInterval(TimePrint);
+          }, 1000);
+          // & END TUNGGU PROSES
         }
       },
       (err) => {
