@@ -375,7 +375,7 @@ export default function Surat(props) {
               }, 1000);
               // & END TUNGGU PROSES
             } else {
-              msgErrorSeder(resultset);
+              tryAgainSendSignature(resultset);
             }
           },
           (err) => {
@@ -392,9 +392,8 @@ export default function Surat(props) {
     const resultset = result;
     result?.token_signature?.map((x) => {
       if (typeof notifSuratTandaTangan === 'function') {
-        notifSuratTandaTangan(
-          result,
-          (success) => {
+        notifSuratTandaTangan(result, (success) => {
+          if (success == true) {
             setIsLoading(false);
             const TimePrint = setInterval(() => {
               $('.containerLoadingFull')
@@ -404,11 +403,8 @@ export default function Surat(props) {
               window.open(url_printing + results?.data?.id_surat);
               clearInterval(TimePrint);
             }, 1000);
-          },
-          (error) => {
-            msgErrorSeder(resultset);
           }
-        );
+        });
       } else {
         senderWa(
           `sebuah surat dengan nama ${x?.surat?.wizard?.name} dari ${x?.surat?.penduduk?.nama_lengkap} meminta validasi tanda tangan anda, lihat surat. https://v3.gigades.id/Surat?acc=${x?.uid}`,
@@ -435,12 +431,12 @@ export default function Surat(props) {
               }, 1000);
               // & END TUNGGU PROSES
             } else {
-              msgErrorSeder(resultset);
+              tryAgainSendSignature(resultset);
             }
           },
           (err) => {
             if (err) {
-              msgErrorSeder(resultset);
+              tryAgainSendSignature(resultset);
             }
           }
         );
