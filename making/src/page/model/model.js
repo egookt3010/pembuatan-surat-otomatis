@@ -160,7 +160,7 @@ async function senderWa(msg, noTelp, response, error) {
     .catch((err) => {
       error(true);
       throw new Error(
-        `API call failed with status code: ${err.response.status} after 3 retry attempts`
+        `API call failed with status code:500 after 3 retry attempts`
       );
     });
   if (send) {

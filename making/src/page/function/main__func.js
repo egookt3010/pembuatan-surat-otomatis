@@ -292,6 +292,17 @@ export const buildSignature = (code, data, response) => {
                 }' class='switch' type='checkbox' />
               </font>`
               ).prevObject[0]?.outerHTML ?? source;
+          const watermark_gigades = `http://v3.gigades.id/assets/jpg/ttd/gigades.jpg`;
+          // source =
+          //   $(source)
+          //     .find(
+          //       `img[type='img-auto'][name='img-signature'][fildquery='${$(
+          //         $(autoGet[i])
+          //       ).attr('fildquery')}']`
+          //     )
+          //     .css('opacity', '0')
+          //     .attr('src', `${watermark_gigades}`).prevObject[0]?.outerHTML ??
+          //   source;
 
           source =
             $(source)
@@ -301,8 +312,15 @@ export const buildSignature = (code, data, response) => {
                 ).attr('fildquery')}']`
               )
               .css('opacity', '0')
-              .attr('src', `${resultset.url_signature}`).prevObject[0]
+              .attr('src', `${watermark_gigades}`)
+              .attr('data-url', `${resultset.url_signature}`)
+              .attr('data-id', `${resultset.id_perangkat_desa}`).prevObject[0]
               ?.outerHTML ?? source;
+
+          /**
+           * !TANDA TANGAN LANGSUNG
+           *
+           */
         }
       }
     }

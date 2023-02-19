@@ -634,6 +634,17 @@ export default function Surat(props) {
     }
     setHndelSignatures(args);
   };
+  useEffect(() => {
+    if (sig == true) {
+      toast.success(
+        `jika tanda tangan di aktifkan, anda harus menunggu persetujuan dari pimpinan terkait.`,
+        {
+          position: toast.POSITION.BOTTOM_LEFT,
+          autoClose: 50000,
+        }
+      );
+    }
+  }, [sig]);
   /*
    ~END  FUNGSI TANDA TANGAN
    */
