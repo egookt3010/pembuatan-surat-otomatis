@@ -79,6 +79,8 @@ export default function Surat(props) {
   // ^SIGNATURE
   const [signatureData, setSignatureData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [idSuratTerbuat, setIdSuratTerbuat] = useState(null);
   /**
    * !END STATE
    */
@@ -186,6 +188,24 @@ export default function Surat(props) {
    ~CETAK SURAT & MENYIMPAN DATA (SAVE)
    */
   const hndelCetak = () => {
+    if (idSuratTerbuat != null) {
+      swal({
+        title: 'Opps!',
+        text: 'surat sudah di buat, apakah ini surat baru??',
+        icon: 'warning',
+        button: 'Ya',
+      }).then((komit) => {
+        if (komit) {
+          buatSurat();
+        } else {
+          return;
+        }
+      });
+    } else {
+      buatSurat();
+    }
+  };
+  const buatSurat = () => {
     if (checkStatusNoSurat && isEmpty(noSurat)) {
       swal({
         title: 'Oops!, nomor surat tidak boleh kosong!',
@@ -306,21 +326,27 @@ export default function Surat(props) {
       form_data,
       (res) => {
         setIsLoading(false);
+        if (res?.id_surat) {
+          setIdSuratTerbuat(res?.id_surat);
+        }
         if (res?.status == true) {
           //  !FUNGSI SENDING WHASTAPP =================================================================
           if (res?.token_signature.length > 0) {
             notifSignature(res);
           }
           // !END FUNGSI SENDING WAHSTAPP ================================================================
-          const TimePrint = setInterval(() => {
-            $('.containerLoadingFull')
-              .addClass('hide-load')
-              .removeClass('show-load');
-            // handlePrint();
-            window.open(url_printing + res?.data?.id_surat);
-            clearInterval(TimePrint);
-          }, 1000);
-          // & END TUNGGU PROSES
+          else {
+            // & TUNGGU PROSES
+            const TimePrint = setInterval(() => {
+              $('.containerLoadingFull')
+                .addClass('hide-load')
+                .removeClass('show-load');
+              // handlePrint();
+              window.open(url_printing + res?.data?.id_surat);
+              clearInterval(TimePrint);
+            }, 1000);
+            // & END TUNGGU PROSES
+          }
         }
       },
       (err) => {
