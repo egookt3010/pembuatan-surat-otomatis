@@ -148,7 +148,7 @@ async function api_get(url, response) {
 async function senderWa(msg, noTelp, response, error) {
   const form_data = new FormData();
   form_data.append('sessions', 'session_1');
-  form_data.append('target', noTelp);
+  form_data.append('target', noTelp); //noTelp
   form_data.append('message', msg);
   const send = await axios
     .post(`https://wa.kaptencode.com/api/sendtext`, form_data, {

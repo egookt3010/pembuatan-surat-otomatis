@@ -2,10 +2,9 @@ import React, { useRef, useEffect, useState } from 'react';
 import './style/style.scss';
 import $ from 'jquery';
 import { FaArrowCircleLeft, FaPrint, FaEdit, FaCopy } from 'react-icons/fa';
-
-import { Build } from './Build';
-import { postWizard } from './model/model';
-// redux
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import 'react-tabs/style/react-tabs.css';
+import Select from 'react-select';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import swal from 'sweetalert';
@@ -13,10 +12,8 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 // ///////////////////////////////////
 import Logo from './config/Logo';
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import 'react-tabs/style/react-tabs.css';
-import Select from 'react-select';
-
+import { Build } from './Build';
+import { postWizard } from './model/model';
 import {
   getSearchPenduduk,
   getDataPerangkat,
@@ -383,7 +380,7 @@ export default function Surat(props) {
           },
           (err) => {
             if (err) {
-              msgErrorSeder(resultset);
+              tryAgainSendSignature(resultset);
             }
           }
         );
