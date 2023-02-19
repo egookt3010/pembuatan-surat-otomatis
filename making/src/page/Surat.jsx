@@ -25,6 +25,7 @@ import {
   RequestNoSurat,
   senderWa,
 } from './model/model';
+import { isEmpty, uniqueId } from './function/fx';
 import { url_printing } from './config/config';
 import { CheckKopSurat, CheckNoSurat } from './function/main__func';
 import Editor from './components/CkEditor';
@@ -78,9 +79,12 @@ export default function Surat(props) {
 
   // ^SIGNATURE
   const [signatureData, setSignatureData] = useState([]);
+  // ^UID
+  const [uid, setUid] = useState(null);
+  // !-------------------------------------------------------
   const [isLoading, setIsLoading] = useState(false);
-
   const [idSuratTerbuat, setIdSuratTerbuat] = useState(null);
+  const [userRole, setUserRole] = useState(null);
   /**
    * !END STATE
    */
@@ -94,49 +98,50 @@ export default function Surat(props) {
    * !END
    */
 
-  function isEmpty(args) {
-    if (args == 'null') return true;
-    if (args == '') return true;
-    if (args == ' ') return true;
-    if (args == 'undefined') return true;
-    if (args == null) return true;
-    if (args == undefined) return true;
-    if (args == false) return true;
-    return false;
-  }
-
   /*
    ~INISIAL ELEMENTS ----------------------------------------------------
    */
   useEffect(() => {
-    if (sessionStorage.getItem('_surat') != undefined) {
-      const surat =
-        JSON?.parse(sessionStorage.getItem('_surat') ?? '{}') ?? '{}';
-      setDataSurat(surat);
-      setData(surat?.code ?? '');
-      setConfigPrint(JSON.parse(surat?.config_print ?? '{}'));
-      func__statusKop(surat?.code ?? '');
-      func__checkStatusNoSurat(surat?.code ?? '');
-      setLampiran(JSON.parse(surat?.attachment ?? '[]'));
-      setConfigure(JSON.parse(surat?.config_print ?? '[]'));
-      hndelGetPenduduk();
-      getDataPerangkatDesa();
-      getDesa();
-      getNomorSurat(surat);
-      getDatajabatan();
-      sessionStorage.setItem('PegaturanPrint', surat?.config_print ?? '[]');
-      setSetterpadding({
-        paddingTop:
-          JSON.parse(surat?.config_print ?? '[]')?.paperMargin?.top ?? 0,
-        paddingBottom:
-          JSON.parse(surat?.config_print ?? '[]')?.paperMargin?.bottom ?? 0,
-        paddingLeft:
-          JSON.parse(surat?.config_print ?? '[]')?.paperMargin?.left ?? 0,
-        paddingRight:
-          JSON.parse(surat?.config_print ?? '[]')?.paperMargin?.right ?? 0,
-      });
+    if (props.init) {
+      if (!isEmpty(props.init?.role)) {
+        setUserRole(props.init?.role);
+        if (props.init?.role == 'PENDUDUK') {
+          // setpenduduk(props.init?.penduduk);
+          hndelPendudukChange({ value: props.init?.penduduk?.nik });
+        }
+      }
+      if (sessionStorage.getItem('_surat') != undefined) {
+        const surat =
+          JSON?.parse(sessionStorage.getItem('_surat') ?? '{}') ?? '{}';
+        if (!isEmpty(sessionStorage.getItem('uuid'))) {
+          setUid(sessionStorage.getItem('uuid'));
+        }
+        setDataSurat(surat);
+        setData(surat?.code ?? '');
+        setConfigPrint(JSON.parse(surat?.config_print ?? '{}'));
+        func__statusKop(surat?.code ?? '');
+        func__checkStatusNoSurat(surat?.code ?? '');
+        setLampiran(JSON.parse(surat?.attachment ?? '[]'));
+        setConfigure(JSON.parse(surat?.config_print ?? '[]'));
+        hndelGetPenduduk();
+        getDataPerangkatDesa();
+        getDesa();
+        getNomorSurat(surat);
+        getDatajabatan();
+        sessionStorage.setItem('PegaturanPrint', surat?.config_print ?? '[]');
+        setSetterpadding({
+          paddingTop:
+            JSON.parse(surat?.config_print ?? '[]')?.paperMargin?.top ?? 0,
+          paddingBottom:
+            JSON.parse(surat?.config_print ?? '[]')?.paperMargin?.bottom ?? 0,
+          paddingLeft:
+            JSON.parse(surat?.config_print ?? '[]')?.paperMargin?.left ?? 0,
+          paddingRight:
+            JSON.parse(surat?.config_print ?? '[]')?.paperMargin?.right ?? 0,
+        });
+      }
     }
-  }, []);
+  }, [props.init]);
   /*
    ~END INISIAL ELEMENTS ----------------------------------------------------
    */
@@ -285,7 +290,7 @@ export default function Surat(props) {
         if (dataSurat.id_wizard_template) {
           const form_data = new FormData();
           form_data.append('id_wizard', dataSurat?.id_wizard_template ?? 0);
-
+          form_data.append('uid', uid);
           // ^ MENGAMBIL HTML SURAT ===========================================
           form_data.append(
             'content',
@@ -325,7 +330,6 @@ export default function Surat(props) {
     postWizard(
       form_data,
       (res) => {
-        setIsLoading(false);
         if (res?.id_surat) {
           setIdSuratTerbuat(res?.id_surat);
         }
@@ -333,6 +337,8 @@ export default function Surat(props) {
           //  !FUNGSI SENDING WHASTAPP =================================================================
           if (res?.token_signature.length > 0) {
             notifSignature(res);
+          } else {
+            setIsLoading(false);
           }
           // !END FUNGSI SENDING WAHSTAPP ================================================================
 
@@ -351,16 +357,31 @@ export default function Surat(props) {
       (err) => {
         // ! ERROR PROSES
         setIsLoading(false);
-        swal({
-          title: 'Oops!',
-          text: 'Kesalahan saat membuat surat, Silahkan ulangi. jika masin gagal coba reload.',
-          icon: 'error',
-          button: 'Reload',
-        }).then((loads) => {
-          if (loads) {
-            window.location.reload();
-          }
-        });
+        // console.log(err, err?.response, err?.response?.status);
+        if (!isEmpty(err?.response?.status) && err?.response?.status == 401) {
+          swal({
+            title: 'Oops!',
+            text: 'validasi data anda bermasalah, apakah surat ini sudah di print? jika ya kembali ke pemilihan surat dan buat surat baru.',
+            icon: 'error',
+            button: 'Ya',
+          }).then((loads) => {
+            if (loads) {
+              window.history.go(-1);
+              return false;
+            }
+          });
+        } else {
+          swal({
+            title: 'Oops!',
+            text: 'Kesalahan saat membuat surat, Silahkan ulangi. jika masin gagal coba reload.',
+            icon: 'error',
+            button: 'Reload',
+          }).then((loads) => {
+            if (loads) {
+              window.location.reload();
+            }
+          });
+        }
         // !END ERROR PROSES
       }
     );
@@ -763,13 +784,15 @@ export default function Surat(props) {
 
                 <TabPanel>
                   <div className='content-aside-card'>
-                    <div className='form-group'>
-                      <label htmlFor=''>CARI NAMA PEMOPHON</label>
-                      <Select
-                        options={optionDataPenduduk}
-                        onChange={hndelPendudukChange}
-                      />
-                    </div>
+                    {userRole == 'ADMIN-DESA' && (
+                      <div className='form-group'>
+                        <label htmlFor=''>CARI NAMA PEMOPHON</label>
+                        <Select
+                          options={optionDataPenduduk}
+                          onChange={hndelPendudukChange}
+                        />
+                      </div>
+                    )}
                     {statusKop && (
                       <div className='form-group'>
                         <label htmlFor=''>PILIH KOP SURAT</label>

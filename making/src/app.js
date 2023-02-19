@@ -1,13 +1,13 @@
-import React, { Component, useEffect } from "react";
-import { render } from "react-dom";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import { Provider } from "react-redux";
-import { createStore } from "redux";
+import React, { Component, useEffect } from 'react';
+import { render } from 'react-dom';
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
 // import Letters from "./components/LetterCreate/Letter";
 // import ListLetter from "./components/ListLetter/index";
 
-import Aplication from "./page/Surat";
-import reducer from "./store/index";
+import Aplication from './page/App';
+import reducer from './store/index';
 
 const store = createStore(reducer);
 
@@ -23,6 +23,6 @@ const Routers = () => {
   );
 };
 
-render(<Routers />, document.getElementById("component"));
+render(<Routers />, document.getElementById('component'));
 
 // require("./components/juru_pungut/index");

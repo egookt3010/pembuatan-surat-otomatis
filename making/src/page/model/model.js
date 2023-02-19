@@ -63,8 +63,8 @@ const getKopSurat = async (response) => {
   }
 };
 
-const postWizard = (data, respose) => {
-  api_post(`${url_api_server}surat/create`, data, respose);
+const postWizard = (data, respose, error) => {
+  api_post(`${url_api_server}surat/create`, data, respose, error);
 };
 
 const updatePostWizard = (id, data, respose) => {
