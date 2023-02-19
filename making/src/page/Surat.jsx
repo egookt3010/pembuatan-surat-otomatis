@@ -32,6 +32,7 @@ import { url_printing } from './config/config';
 import { CheckKopSurat, CheckNoSurat } from './function/main__func';
 import Editor from './components/CkEditor';
 import PengaturanPrint from './components/PengaturanPrint';
+import LoadingSpinner from './components/LoadingSpinner';
 
 export default function Surat(props) {
   /**
@@ -76,6 +77,11 @@ export default function Surat(props) {
   const [hndelSignatures, setHndelSignatures] = useState([]);
   const [loadingNext, setLoadingNext] = useState(false);
   const [sig, setSig] = useState(false);
+  const [seder, setSeder] = useState(true);
+
+  // ^SIGNATURE
+  const [signatureData, setSignatureData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   /**
    * !END STATE
    */
@@ -210,6 +216,8 @@ export default function Surat(props) {
       text: msgs,
       icon: 'warning',
       button: 'OK',
+      showCancelButton: true,
+      cancelButtonText: 'Batal',
     }).then((komit) => {
       // ? true
       if (komit) {
@@ -269,7 +277,6 @@ export default function Surat(props) {
               .css('border', 'none').prevObject[0]?.innerHTML ?? ``
           );
           // ^ END MENGAMBIL HTML SURAT ======================================
-
           form_data.append('code', data);
           form_data.append('nik', penduduk.nik);
           form_data.append('penduduk', JSON.stringify(penduduk));
@@ -278,7 +285,6 @@ export default function Surat(props) {
           form_data.append('config', JSON.stringify(configPrint));
           form_data.append('form_entry', JSON.stringify(SetValValue));
           form_data.append('signature', JSON.stringify(hndelSignatures));
-
           //  ^LAMPIRAN ===================================================
           if (lampiran.length > 0) {
             lampiran.map((_o, i) => {
@@ -288,74 +294,173 @@ export default function Surat(props) {
             form_data.append('data_lampiran', JSON.stringify(lampiran));
           }
           // ^END LAMPIRAN ===============================================
-
-          postWizard(
-            form_data,
-            (res) => {
-              if (res?.status == true) {
-                //  !FUNGSI SENDING WHASTAPP =================================================================
-                if (res?.token_signature.length > 0) {
-                  res?.token_signature?.map((x) => {
-                    if (typeof notifSuratTandaTangan === 'function') {
-                      notifSuratTandaTangan(res);
-                    } else {
-                      senderWa(
-                        `sebuah surat dengan nama ${x?.surat?.wizard?.name} dari ${x?.surat?.penduduk?.nama_lengkap} meminta validasi tanda tangan anda, lihat surat. https://v3.gigades.id/Surat?acc=${x?.uid}`,
-                        x?.perangkat?.no_telp,
-                        (results) => {
-                          toast.success(
-                            `permohonan tandatangan terkirim, untuk memastikan anda dapat menghubungi ${x?.perangkat?.no_telp}`,
-                            // `permohonan tandatangan terkirim, jika pimpinan tidak mendapatkan pesan, silahkan kirim link berikut,  https://v3.gigades.id/Surat?acc=${x?.uid}`,
-                            {
-                              position: toast.POSITION.BOTTOM_LEFT,
-                              autoClose: 10000,
-                            }
-                          );
-                        },
-                        (err) => {
-                          if (err) {
-                            toast.error(
-                              `sepertinya ada kesalahan,untuk memastikan anda dapat menghubungi ${x?.perangkat?.no_telp}`,
-                              {
-                                position: toast.POSITION.BOTTOM_LEFT,
-                                autoClose: 10000,
-                              }
-                            );
-                          }
-                        }
-                      );
-                    }
-                  });
+          Simpan(form_data);
+        }
+      } else {
+        $('.containerLoadingFull')
+          .addClass('hide-load')
+          .removeClass('show-load');
+      }
+    });
+  };
+  const Simpan = (form_data) => {
+    setIsLoading(true);
+    postWizard(
+      form_data,
+      (res) => {
+        setIsLoading(false);
+        if (res?.status == true) {
+          //  !FUNGSI SENDING WHASTAPP =================================================================
+          if (res?.token_signature.length > 0) {
+            notifSignature(res);
+          }
+          // !END FUNGSI SENDING WAHSTAPP ================================================================
+          else {
+            // & TUNGGU PROSES
+            const TimePrint = setInterval(() => {
+              $('.containerLoadingFull')
+                .addClass('hide-load')
+                .removeClass('show-load');
+              // handlePrint();
+              window.open(url_printing + res?.data?.id_surat);
+              clearInterval(TimePrint);
+            }, 1000);
+            // & END TUNGGU PROSES
+          }
+        }
+      },
+      (err) => {
+        // ! ERROR PROSES
+        setIsLoading(false);
+        swal({
+          title: 'Oops!',
+          text: 'Kesalahan saat membuat surat, Silahkan ulangi. jika masin gagal coba reload.',
+          icon: 'error',
+          button: 'Reload',
+        }).then((loads) => {
+          if (loads) {
+            window.location.reload();
+          }
+        });
+        // !END ERROR PROSES
+      }
+    );
+  };
+  const notifSignature = (result) => {
+    const resultset = result;
+    setSignatureData(result);
+    result?.token_signature?.map((x) => {
+      if (typeof notifSuratTandaTangan === 'function') {
+        notifSuratTandaTangan(result);
+      } else {
+        senderWa(
+          `sebuah surat dengan nama ${x?.surat?.wizard?.name} dari ${x?.surat?.penduduk?.nama_lengkap} meminta validasi tanda tangan anda, lihat surat. https://v3.gigades.id/Surat?acc=${x?.uid}`,
+          x?.perangkat?.no_telp,
+          (results) => {
+            if (results?.status == 200) {
+              setIsLoading(false);
+              toast.success(
+                `permohonan tandatangan terkirim, untuk memastikan anda dapat menghubungi ${x?.perangkat?.no_telp}`,
+                // `permohonan tandatangan terkirim, jika pimpinan tidak mendapatkan pesan, silahkan kirim link berikut,  https://v3.gigades.id/Surat?acc=${x?.uid}`,
+                {
+                  position: toast.POSITION.BOTTOM_LEFT,
+                  autoClose: 10000,
                 }
-              }
-              // !END FUNGSI SENDING WAHSTAPP ================================================================
+              );
               // & TUNGGU PROSES
               const TimePrint = setInterval(() => {
                 $('.containerLoadingFull')
                   .addClass('hide-load')
                   .removeClass('show-load');
                 // handlePrint();
-                window.open(url_printing + res?.data?.id_surat);
+                window.open(url_printing + results?.data?.id_surat);
                 clearInterval(TimePrint);
               }, 1000);
               // & END TUNGGU PROSES
-            },
-            (err) => {
-              // ! ERROR PROSES
-              swal({
-                title: 'Oops!',
-                text: 'Kesalahan saat membuat surat, Silahkan ulangi. jika masin gagal coba reload.',
-                icon: 'error',
-                button: 'OK',
-              });
-              // !END ERROR PROSES
+            } else {
+              msgErrorSeder(resultset);
             }
-          );
-        }
+          },
+          (err) => {
+            if (err) {
+              msgErrorSeder(resultset);
+            }
+          }
+        );
+      }
+    });
+  };
+  const tryAgainSendSignature = (result) => {
+    setIsLoading(true);
+    const resultset = result;
+    result?.token_signature?.map((x) => {
+      if (typeof notifSuratTandaTangan === 'function') {
+        notifSuratTandaTangan(
+          result,
+          (success) => {
+            setIsLoading(false);
+            const TimePrint = setInterval(() => {
+              $('.containerLoadingFull')
+                .addClass('hide-load')
+                .removeClass('show-load');
+              // handlePrint();
+              window.open(url_printing + results?.data?.id_surat);
+              clearInterval(TimePrint);
+            }, 1000);
+          },
+          (error) => {
+            msgErrorSeder(resultset);
+          }
+        );
       } else {
-        $('.containerLoadingFull')
-          .addClass('hide-load')
-          .removeClass('show-load');
+        senderWa(
+          `sebuah surat dengan nama ${x?.surat?.wizard?.name} dari ${x?.surat?.penduduk?.nama_lengkap} meminta validasi tanda tangan anda, lihat surat. https://v3.gigades.id/Surat?acc=${x?.uid}`,
+          x?.perangkat?.no_telp,
+          (results) => {
+            if (results?.status == 200) {
+              setIsLoading(false);
+              toast.success(
+                `permohonan tandatangan terkirim, untuk memastikan anda dapat menghubungi ${x?.perangkat?.no_telp}`,
+                // `permohonan tandatangan terkirim, jika pimpinan tidak mendapatkan pesan, silahkan kirim link berikut,  https://v3.gigades.id/Surat?acc=${x?.uid}`,
+                {
+                  position: toast.POSITION.BOTTOM_LEFT,
+                  autoClose: 10000,
+                }
+              );
+              // & TUNGGU PROSES
+              const TimePrint = setInterval(() => {
+                $('.containerLoadingFull')
+                  .addClass('hide-load')
+                  .removeClass('show-load');
+                // handlePrint();
+                window.open(url_printing + results?.data?.id_surat);
+                clearInterval(TimePrint);
+              }, 1000);
+              // & END TUNGGU PROSES
+            } else {
+              msgErrorSeder(resultset);
+            }
+          },
+          (err) => {
+            if (err) {
+              msgErrorSeder(resultset);
+            }
+          }
+        );
+      }
+    });
+  };
+  const msgErrorSeder = (resultset) => {
+    setIsLoading(false);
+    swal({
+      title: 'Oops!',
+      text: 'Kesalahan saat mengirim pesan kepada  pimpinan, ulangi!',
+      icon: 'error',
+      button: 'try again',
+    }).then((komit) => {
+      if (komit) {
+        tryAgainSendSignature(resultset);
+      } else {
       }
     });
   };
@@ -546,6 +651,7 @@ export default function Surat(props) {
   return (
     <div id='printing-root'>
       <ToastContainer />
+      {isLoading && <LoadingSpinner />}
       {statusEdit ? (
         <Editor
           code={data}
@@ -592,7 +698,7 @@ export default function Surat(props) {
                       onClick={hndelCetak}>
                       <FaPrint size={16} />
                       <span style={{ marginLeft: '3px' }}>
-                        {sig ? ' simpan' : ' print'}
+                        {sig ? ' Kirim Permohonan' : ' print'}
                       </span>
                     </button>
                   )}

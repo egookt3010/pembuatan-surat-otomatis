@@ -25,6 +25,7 @@
     "@faker-js/faker": "^6.1.2",
     "@react-pdf-viewer/core": "3.7.0",
     "@sweetalert/with-react": "^0.1.1",
+    "axios-retry": "^3.4.0",
     "dom-to-image": "^2.6.0",
     "faker": "^6.6.6",
     "framer-motion": "^6.2.9",

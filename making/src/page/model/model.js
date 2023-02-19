@@ -6,6 +6,7 @@ import {
   url_server_api,
 } from '../config/config';
 import axios from 'axios';
+import axiosRetry from 'axios-retry';
 import moment from 'moment';
 import { penduduk, perangkat } from '../config/dummy';
 
@@ -156,11 +157,28 @@ async function senderWa(msg, noTelp, response, error) {
         Authorization: '821824446b294f4eaf571e1941c529b2',
       },
     })
-    .catch((err) => error(true));
+    .catch((err) => {
+      error(true);
+      throw new Error(
+        `API call failed with status code: ${err.response.status} after 3 retry attempts`
+      );
+    });
   if (send) {
     response(send);
-    error(false);
   }
+
+  axiosRetry(axios, {
+    retries: 3, // number of retries
+    retryDelay: (retryCount) => {
+      console.log(`retry attempt: ${retryCount}`);
+      return retryCount * 2000; // time interval between retries
+    },
+    retryCondition: (error) => {
+      error(true);
+      // if retry condition is not specified, by default idempotent requests are retried
+      return error.response.status === 503;
+    },
+  });
 }
 // !OFF
 // async function sendWa(number, msg, result) {
