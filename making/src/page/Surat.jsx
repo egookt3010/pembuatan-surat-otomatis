@@ -85,6 +85,7 @@ export default function Surat(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [idSuratTerbuat, setIdSuratTerbuat] = useState(null);
   const [userRole, setUserRole] = useState(null);
+  const [initRequest, setInitRequest] = useState(null);
   /**
    * !END STATE
    */
@@ -104,9 +105,11 @@ export default function Surat(props) {
   useEffect(() => {
     if (props.init) {
       if (!isEmpty(props.init?.role)) {
+        // console.log('|>', props.init?.request?.id);
         setUserRole(props.init?.role);
         if (props.init?.role == 'PENDUDUK') {
           // setpenduduk(props.init?.penduduk);
+          setInitRequest(props.init);
           hndelPendudukChange({ value: props.init?.penduduk?.nik });
         }
       }
@@ -316,6 +319,9 @@ export default function Surat(props) {
             form_data.append('data_lampiran', JSON.stringify(lampiran));
           }
           // ^END LAMPIRAN ===============================================
+          // ^INIT DATA
+          form_data.append('id_request_sisfo', initRequest?.request?.id);
+          // ^============================================================
           Simpan(form_data);
         }
       } else {
