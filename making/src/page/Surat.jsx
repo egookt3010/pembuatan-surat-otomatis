@@ -455,10 +455,10 @@ export default function Surat(props) {
           }
         });
       } else {
-        senderWa(
-          `sebuah surat dengan nama ${x?.surat?.wizard?.name} dari ${x?.surat?.penduduk?.nama_lengkap} meminta validasi tanda tangan anda, lihat surat. https://v3.gigades.id/Surat?acc=${x?.uid}`,
-          x?.perangkat?.no_telp,
-          (results) => {
+        const config = {
+          number: x?.perangkat?.no_telp,
+          text: `sebuah surat dengan nama ${x?.surat?.wizard?.name} dari ${x?.surat?.penduduk?.nama_lengkap} meminta validasi tanda tangan anda, lihat surat. https://v3.gigades.id/Surat?acc=${x?.uid}`,
+          results: (results) => {
             if (results?.status == 200) {
               setIsLoading(false);
               toast.success(
@@ -483,12 +483,13 @@ export default function Surat(props) {
               tryAgainSendSignature(resultset);
             }
           },
-          (err) => {
+          error: (err) => {
             if (err) {
               tryAgainSendSignature(resultset);
             }
-          }
-        );
+          },
+        };
+        senderWa(config);
       }
     });
   };

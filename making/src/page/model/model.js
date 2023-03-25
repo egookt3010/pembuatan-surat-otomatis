@@ -145,16 +145,16 @@ async function api_get(url, response) {
     response(___gets);
   }
 }
-async function senderWa(msg, noTelp, response, error) {
+async function senderWa(props) {
+  const { number, text, results, error } = props;
   const form_data = new FormData();
-  form_data.append('sessions', 'session_1');
-  form_data.append('target', noTelp); //noTelp
-  form_data.append('message', msg);
+  // form_data.append('sessions', 'session_1');
+  form_data.append('number', number); //noTelp
+  form_data.append('text', text);
   const send = await axios
-    .post(`https://wa.kaptencode.com/api/sendtext`, form_data, {
+    .post(`${url_api_server}wa/send`, form_data, {
       headers: {
         'Content-Type': 'application/json',
-        Authorization: '821824446b294f4eaf571e1941c529b2',
       },
     })
     .catch((err) => {
@@ -164,7 +164,7 @@ async function senderWa(msg, noTelp, response, error) {
       );
     });
   if (send) {
-    response(send);
+    results(send);
   }
 
   axiosRetry(axios, {
