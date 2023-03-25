@@ -141,7 +141,10 @@ export const buildAutoDataDesa = (code, data) => {
             )}']`
           )
           .text(findVal(data, $($(autoGet[i])).attr('fildquery')) ?? '....')
-          .prevObject[0];
+          .css({
+            'background-color': 'transparent',
+            color: 'black',
+          }).prevObject[0];
       }
     }
     return source != undefined && source != null
