@@ -22,8 +22,12 @@ const getSearchPenduduk = (searching, respose) => {
   api_get(`${url_api_server}wizard/getPenduduk/${searching}`, respose);
 };
 
+const getSearchPoeple = (searching, respose) => {
+  api_get(`${url_api_server}v1/mail/people?q=${searching}`, respose);
+};
+
 const getPenduduk = (respose) => {
-  api_get(`${url_api_server}wizard/getPenduduk`, respose);
+  api_get(`${url_api_server}v1/mail/people`, respose);
 };
 
 const getJabatan = (respose) => {
@@ -212,4 +216,5 @@ export {
   RequestNoSurat,
   updatePostWizard,
   senderWa,
+  getSearchPoeple,
 };

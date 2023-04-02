@@ -24,6 +24,7 @@ import {
   getJabatan,
   RequestNoSurat,
   senderWa,
+  getSearchPoeple,
 } from './model/model';
 import { isEmpty, uniqueId } from './function/fx';
 import { url_printing } from './config/config';
@@ -399,10 +400,10 @@ export default function Surat(props) {
       if (typeof notifSuratTandaTangan === 'function') {
         notifSuratTandaTangan(result);
       } else {
-        senderWa(
-          `sebuah surat dengan nama ${x?.surat?.wizard?.name} dari ${x?.surat?.penduduk?.nama_lengkap} meminta validasi tanda tangan anda, lihat surat. https://v3.gigades.id/Surat?acc=${x?.uid}`,
-          x?.perangkat?.no_telp,
-          (results) => {
+        const config = {
+          text: `sebuah surat dengan nama ${x?.surat?.wizard?.name} dari ${x?.surat?.penduduk?.nama_lengkap} meminta validasi tanda tangan anda, lihat surat. https://v3.gigades.id/Surat?acc=${x?.uid}`,
+          number: x?.perangkat?.no_telp,
+          results: (results) => {
             if (results?.status == 200) {
               setIsLoading(false);
               toast.success(
@@ -424,15 +425,16 @@ export default function Surat(props) {
               }, 1000);
               // & END TUNGGU PROSES
             } else {
-              tryAgainSendSignature(resultset);
+              // tryAgainSendSignature(resultset);
             }
           },
-          (err) => {
+          error: (err) => {
             if (err) {
-              tryAgainSendSignature(resultset);
+              // tryAgainSendSignature(resultset);
             }
-          }
-        );
+          },
+        };
+        senderWa(config);
       }
     });
   };
@@ -580,7 +582,26 @@ export default function Surat(props) {
   const hndelPendudukChange = (thisOpt) => {
     getSearchPenduduk(thisOpt.value, (result) => {
       if (result?.status ?? 400 == 200) {
+        setMasterPenduduk(result.data);
+        const opt = [];
+        result.data.map((_, i) => {
+          opt.push({ value: _.nik, label: _.nama_lengkap });
+        });
+        setOptionDataPenduduk(opt);
         setpenduduk(result.data[0]);
+      }
+    });
+  };
+  const hndelInputChange = (thisOpt) => {
+    getSearchPoeple(thisOpt, (result) => {
+      if (result?.status ?? 400 == 200) {
+        console.log(result);
+        setMasterPenduduk(result.data);
+        const opt = [];
+        result.data.map((_, i) => {
+          opt.push({ value: _.nik, label: _.nama_lengkap });
+        });
+        setOptionDataPenduduk(opt);
       }
     });
   };
@@ -797,6 +818,7 @@ export default function Surat(props) {
                         <Select
                           options={optionDataPenduduk}
                           onChange={hndelPendudukChange}
+                          onInputChange={hndelInputChange}
                         />
                       </div>
                     )}
